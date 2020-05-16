@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+//Importing bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+//Importing local css file import after bootstrap to override css properties
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
