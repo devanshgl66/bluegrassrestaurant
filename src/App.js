@@ -1,9 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 //reactstrap is used to use bootstrap in react
 import {Navbar,NavbarBrand} from 'reactstrap'
 import './App.css';
-
+import Menu from './components/menu'
 function App() {
   React.createElement('<h1>Hello</h1>',{});
   return (
@@ -13,6 +13,7 @@ function App() {
           <NavbarBrand href='/'>Restaurant confusion</NavbarBrand>
         </div>
       </Navbar>
+      <Menu/>
     </div>
   );
 }
