@@ -4,6 +4,7 @@ import React from 'react';
 import {Navbar,NavbarBrand} from 'reactstrap'
 import './App.css';
 import Menu from './components/menu'
+import {DISHES} from './shared/dishes'
 function App() {
   React.createElement('<h1>Hello</h1>',{});
   return (
@@ -13,7 +14,7 @@ function App() {
           <NavbarBrand href='/'>Restaurant confusion</NavbarBrand>
         </div>
       </Navbar>
-      <Menu/>
+      <Menu dishes ={DISHES} />
     </div>
   );
 }

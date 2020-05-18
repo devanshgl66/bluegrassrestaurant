@@ -1,64 +1,44 @@
 import React,{Component} from 'react'
-import {Media} from 'reactstrap';
+import {Card,CardBody,CardTitle,CardImg,CardImgOverlay,CardText} from 'reactstrap';
 class Menu extends Component{
 
     constructor(props){
+        //props are the input given to this components
         super(props);
+        //saves the state for this components
         this.state={
-            dishes:[
-                {
-                    id: 0,
-                    name:'Uthappizza',
-                    image: 'assets/images/uthappizza.png',
-                    category: 'mains',
-                    label:'Hot',
-                    price:'4.99',
-                    description:'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.'
-                },
-                 {
-                    id: 1,
-                    name:'Zucchipakoda',
-                    image: 'assets/images/zucchipakoda.png',
-                    category: 'appetizer',
-                    label:'',
-                    price:'1.99',
-                    description:'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce'
-                },
-                 {
-                    id: 2,
-                    name:'Vadonut',
-                    image: 'assets/images/vadonut.png',
-                    category: 'appetizer',
-                    label:'New',
-                    price:'1.99',
-                    description:'A quintessential ConFusion experience, is it a vada or is it a donut?'
-                },
-                 {
-                    id: 3,
-                    name:'ElaiCheese Cake',
-                    image: 'assets/images/elaicheesecake.png',
-                    category: 'dessert',
-                    label:'',
-                    price:'2.99',
-                    description:'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms'
-                }
-            ]
+            selectedDish:null
         };
     }
+    renderDish(dish){
+        if(dish){
+            return(
+                <Card>
+                    <CardImg top src={dish.image} alt={dish.name}/>
+                    <CardBody>
+                        <CardTitle>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            )
+        }
+        else{
+            return(
+                <div></div>
+            )
+        }
+    }
     render(){
-        const dishes=this.state.dishes.map((dish)=>{
+        const dishes=this.props.dishes.map((dish)=>{
             return(
                 //mt-5 =>top margin:5 reactstrap
-                <div key={dish.id} className="col-12 mt-5">
-                    <Media tag='li'>
-                        <Media object src={dish.image} alt={dish.name}/>
-                        <Media left middle>
-                            <Media className='ml-5' body>
-                                <Media heading>{dish.name}</Media>
-                                <p>{dish.description}</p>
-                            </Media>
-                        </Media>
-                    </Media>
+                <div key={dish.id} className="col-12 col-md-5 m-1">
+                    <Card onClick={()=>{this.setState({ selectedDish: dish});}}>
+                        <CardImg width='100%' src={dish.image} alt={dish.name}/>
+                        <CardImgOverlay>                            
+                            <CardTitle >{dish.name}</CardTitle>                         
+                        </CardImgOverlay>
+                    </Card>
                 </div>
                 
             )
@@ -67,9 +47,10 @@ class Menu extends Component{
         return(
             <div className='container'>
                 <div className='row'>
-                    <Media list>
-                        {dishes}
-                    </Media>
+                    {dishes}
+                </div>
+                <div className='row'>
+                    {this.renderDish(this.state.selectedDish)}
                 </div>
             </div>
         );
