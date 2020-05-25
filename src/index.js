@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 //Importing bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
 //Importing local css file import after bootstrap to override css properties
+import 'bootstrap-social/bootstrap-social.css'
+import 'font-awesome/css/font-awesome.min.css'
+
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
