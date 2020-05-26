@@ -1,9 +1,10 @@
-import React,{Component} from 'react'
-import {Card,CardBody,CardTitle,CardImg,CardText} from 'reactstrap';
+import React from 'react'
+import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem} from 'reactstrap';
+import { Link } from 'react-router-dom';
 
-function CommentDish({dish}){
-    if(dish){
-        const comments=dish.comments.map((comment)=>{
+function RenderComment({cmts}){
+    if(cmts){
+        const comments=cmts.map((comment)=>{
             return (
                 <li key={comment.id}>
                     <p>{comment.comment}</p>
@@ -40,6 +41,12 @@ function Dish(props){
         return(
             <div className='container'>
                 <div className='row'>
+                    <Breadcrumb>
+                        <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
+                    </Breadcrumb>
+                </div>
+                <div className='row'>
                     <div className="col-12 col-md-5 m-1"> 
                         <Card>
                             <CardImg width='100%' src={dish.image} alt={dish.name}/>
@@ -50,7 +57,7 @@ function Dish(props){
                         </Card>
                     </div>
                     <div className="col-12 col-md-5 m-1"> 
-                        <CommentDish dish={dish} />
+                        <RenderComment cmts={props.comments} />
                     </div>
                 </div>
             </div>
