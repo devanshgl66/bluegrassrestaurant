@@ -1,7 +1,86 @@
 import React from 'react'
-import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem} from 'reactstrap';
+import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label, Col} from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { LocalForm, Control, Errors } from 'react-redux-form';
 
+const required=(val)=>val && val.length
+const minLength=(len)=>(val)=>val && val.length>=len
+const maxLength=(len)=>(val)=>!val || val.length<=len
+
+const handleCmtForm=(values)=>{
+    console.log(values)
+    alert(JSON.stringify(values));
+}
+function CommentForm(){
+    var [isCmtFormOpen,updateCmtFormOpen]=useState(false)
+    const toggleCmtFormOpen=()=>{updateCmtFormOpen(!isCmtFormOpen);}
+    return(
+        <div>
+            <Button outline onClick={toggleCmtFormOpen}>
+                <span className='fa fa-pencil fa-lg'></span>Add Comments
+            </Button>
+            <Modal isOpen={isCmtFormOpen} toggle={toggleCmtFormOpen}
+            >
+                <ModalHeader>Submit Comments</ModalHeader>
+                <ModalBody>
+                    <LocalForm onSubmit={(values)=>handleCmtForm(values)}>
+                        <Row className='form-group'>
+                            <Col>
+                                <Label htmlFor='rating'>Rating</Label>
+                                <Control.select model='.rating' id='rating' name='rating'
+                                    className='form-control'
+                                >
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </Control.select>
+                            </Col>
+                        </Row>
+                        <Row className='form-group'>
+                            <Label htmlFor="name" md={4}>Your Name:</Label>
+                            <Col md={10}>
+                                <Control.text model='.name' id='name' name='name'
+                                    placeholder='Name'
+                                    validators={{
+                                        required,minLength:minLength(3),maxLength:maxLength(15)
+                                    }}
+                                    className='form-control'
+                                />
+                                <Errors
+                                className='text-danger'
+                                model='.name'
+                                show='touched'
+                                messages={{
+                                    required:'Required',
+                                    minLength:'Name should be 3 character long',
+                                    maxLength:'Name should be upto 15 characters'
+                                }}
+                                />
+                            </Col>
+                        </Row>
+                        <Row className='form-group'>
+                            <Label htmlFor='comments' md={4}>Comments</Label>
+                            <Col md={10}>
+                                <Control.textarea model='.comments' rows='6' id='comments' name='comments'
+                                placeholder='Comments' className='form-control' />
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <Button type="submit" color="primary">
+                                    Send Comments
+                                </Button>
+                            </Col>
+                        </Row>
+                    </LocalForm>
+                </ModalBody>
+            </Modal>
+        </div>
+    )
+}
 function RenderComment({cmts}){
     if(cmts){
         const comments=cmts.map((comment)=>{
@@ -29,6 +108,7 @@ function RenderComment({cmts}){
                         </ul>
 
                     </CardBody>
+                    <CommentForm/>
                 </Card>
             </div>
         )
@@ -57,7 +137,7 @@ function Dish(props){
                         </Card>
                     </div>
                     <div className="col-12 col-md-5 m-1"> 
-                        <RenderComment cmts={props.comments} />
+                        <RenderComment cmts={props.comments} />                        
                     </div>
                 </div>
             </div>
