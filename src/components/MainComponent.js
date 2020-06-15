@@ -3,12 +3,16 @@ import Menu from './MenuComponent';
 import Contact from './ContactComponent';
 import Header from './HeaderComponent'
 import Footer from './FooterComponent'
-import {Route,Switch,Redirect} from 'react-router-dom'
+import {Route,Switch,Redirect,withRouter} from 'react-router-dom'
 import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import { connect } from 'react-redux';
+import {addComments} from '../redux/ActionCreater'  //addComments is an action
 
+const mapDispatchToProps=(dispatch)=>({
+  addComments:(dishId,comments,author,rating)=>dispatch(addComments(dishId,comments,author,rating))
+})
 const mapStateToProps=(state)=>{
   return {
     dishes:state.dishes,
@@ -37,6 +41,7 @@ class Main extends Component {
       return(
         <Dish dish={this.props.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0]}
           comments={this.props.comments.filter((comment)=>comment.dishId===parseInt(match.params.dishId,10))}
+          addComments={this.props.addComments}
         />
       )
     }
@@ -59,5 +64,5 @@ class Main extends Component {
     console.log('MainComponent componentDidUpdate is called')
   }
 }
-
-export default (connect(mapStateToProps)(Main));
+//sends states and dispatch as props to Main and its child
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(Main));

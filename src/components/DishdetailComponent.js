@@ -8,11 +8,11 @@ const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
 const maxLength=(len)=>(val)=>!val || val.length<=len
 
-const handleCmtForm=(values)=>{
+const handleCmtForm=(values,addComments,dishId)=>{
     console.log(values)
-    alert(JSON.stringify(values));
+    addComments(dishId,values.comments,values.author,values.rating)
 }
-function CommentForm(){
+function CommentForm({addComments,dishId}){
     var [isCmtFormOpen,updateCmtFormOpen]=useState(false)
     const toggleCmtFormOpen=()=>{updateCmtFormOpen(!isCmtFormOpen);}
     return(
@@ -24,7 +24,7 @@ function CommentForm(){
             >
                 <ModalHeader>Submit Comments</ModalHeader>
                 <ModalBody>
-                    <LocalForm onSubmit={(values)=>handleCmtForm(values)}>
+                    <LocalForm onSubmit={(values)=>handleCmtForm(values,addComments,dishId)}>
                         <Row className='form-group'>
                             <Col>
                                 <Label htmlFor='rating'>Rating</Label>
@@ -42,7 +42,7 @@ function CommentForm(){
                         <Row className='form-group'>
                             <Label htmlFor="name" md={4}>Your Name:</Label>
                             <Col md={10}>
-                                <Control.text model='.name' id='name' name='name'
+                                <Control.text model='.author' id='name' name='name'
                                     placeholder='Name'
                                     validators={{
                                         required,minLength:minLength(3),maxLength:maxLength(15)
@@ -51,7 +51,7 @@ function CommentForm(){
                                 />
                                 <Errors
                                 className='text-danger'
-                                model='.name'
+                                model='.author'
                                 show='touched'
                                 messages={{
                                     required:'Required',
@@ -81,7 +81,7 @@ function CommentForm(){
         </div>
     )
 }
-function RenderComment({cmts}){
+function RenderComment({cmts,addComments,dishId}){
     if(cmts){
         const comments=cmts.map((comment)=>{
             return (
@@ -108,7 +108,7 @@ function RenderComment({cmts}){
                         </ul>
 
                     </CardBody>
-                    <CommentForm/>
+                    <CommentForm addComments={addComments} dishId={dishId}/>
                 </Card>
             </div>
         )
@@ -137,7 +137,8 @@ function Dish(props){
                         </Card>
                     </div>
                     <div className="col-12 col-md-5 m-1"> 
-                        <RenderComment cmts={props.comments} />                        
+                        <RenderComment cmts={props.comments}
+                        addComments={props.addComments}  dishId={props.dish.id}/>                        
                     </div>
                 </div>
             </div>
