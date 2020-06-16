@@ -8,10 +8,11 @@ import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import { connect } from 'react-redux';
-import {addComments} from '../redux/ActionCreater'  //addComments is an action
+import {addComments,fetchDishes} from '../redux/ActionCreater'  //addComments is an action
 
 const mapDispatchToProps=(dispatch)=>({
-  addComments:(dishId,comments,author,rating)=>dispatch(addComments(dishId,comments,author,rating))
+  addComments:(dishId,comments,author,rating)=>dispatch(addComments(dishId,comments,author,rating)),
+  fetchDishes:()=>{dispatch(fetchDishes())}
 })
 const mapStateToProps=(state)=>{
   return {
@@ -22,24 +23,32 @@ const mapStateToProps=(state)=>{
   }
 }
 class Main extends Component {
-
+  //will called every time after this component is re rendered
+  componentDidMount(){
+    this.props.fetchDishes()
+  }
   onDishSelect(dishId) {
     this.setState({ selectedDish: dishId});
   }
   render() {
-    console.log('MainComponent render is called')
+    console.log(this.props.dishes)
     const HomePage=()=>{
       return(
         <Home
-        dish={this.props.dishes.filter((dish)=>dish.featured)[0]}
+        dish={this.props.dishes.dishes.filter((dish)=>dish.featured)[0]}
+        isLoading={this.props.dishes.isLoading}
+        errMsg={this.props.dishes.errMsg}
         promotion={this.props.promotions.filter((promo)=>promo.featured)[0]}
         leader={this.props.leaders.filter((leader)=>leader.featured)[0]}
         />
       )
     }
     const DishWithId=({match})=>{
+      alert(this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0])
       return(
-        <Dish dish={this.props.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0]}
+        <Dish dish={this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0]}
+          dishLoading={this.props.dishes.isLoading}
+          disherrMsg={this.props.dishes.errMsg}
           comments={this.props.comments.filter((comment)=>comment.dishId===parseInt(match.params.dishId,10))}
           addComments={this.props.addComments}
         />
@@ -59,9 +68,6 @@ class Main extends Component {
         <Footer/>
       </div>
     );
-  }
-  componentDidUpdate(){
-    console.log('MainComponent componentDidUpdate is called')
   }
 }
 //sends states and dispatch as props to Main and its child

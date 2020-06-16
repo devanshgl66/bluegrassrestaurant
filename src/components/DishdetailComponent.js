@@ -3,6 +3,7 @@ import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Butt
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
+import { Loading } from './Loading';
 
 const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
@@ -10,7 +11,7 @@ const maxLength=(len)=>(val)=>!val || val.length<=len
 
 const handleCmtForm=(values,addComments,dishId)=>{
     console.log(values)
-    addComments(dishId,values.comments,values.author,values.rating)
+    addComments(dishId,values.comment,values.author,values.rating)
 }
 function CommentForm({addComments,dishId}){
     var [isCmtFormOpen,updateCmtFormOpen]=useState(false)
@@ -117,7 +118,19 @@ function RenderComment({cmts,addComments,dishId}){
 function Dish(props){
     //dish is in props
     var dish=props.dish;
-    if(dish){
+    alert(dish)
+    console.log(dish)
+    if(props.dishLoading)
+        return(
+            // <Loading/>
+            <h1>Loading</h1>
+        )
+    else if(props.disherrMsg)
+        return(
+            // <h4>{props.disherrMsg}</h4>
+            <h1>Error</h1>
+        )
+    else if(dish){
         return(
             <div className='container'>
                 <div className='row'>
@@ -141,6 +154,7 @@ function Dish(props){
                         addComments={props.addComments}  dishId={props.dish.id}/>                        
                     </div>
                 </div>
+                <h1>{props.dishLoading}</h1>
             </div>
         )
     }
