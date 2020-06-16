@@ -4,8 +4,12 @@ import {Dishes} from './Dishes'
 import {Leaders} from './Leaders'
 import {Promotions} from './Promotions'
 import {Comments} from './Comments'
+import {feedback} from './form'
+
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
+import { createForms } from 'react-redux-form'
+
 export const ConfigStore=()=>{
     const store=createStore(combineReducers({
         //Dishes,Leaders,Promotions,Comments are seperate reducers for each.
@@ -13,6 +17,9 @@ export const ConfigStore=()=>{
         leaders:Leaders,
         promotions:Promotions,
         comments:Comments,
+        ...createForms({
+            feedback:feedback
+        })
     }),applyMiddleware(thunk,logger))
     return store;
 }
