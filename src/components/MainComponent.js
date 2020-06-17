@@ -45,7 +45,7 @@ class Main extends Component {
       )
     }
     const DishWithId=({match})=>{
-      alert(this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0])
+      // alert(this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0])
       return(
         <Dish dish={this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0]}
           dishLoading={this.props.dishes.isLoading}

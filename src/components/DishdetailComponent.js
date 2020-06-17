@@ -1,9 +1,8 @@
 import React from 'react'
 import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label, Col} from 'reactstrap';
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
-import { Loading } from './Loading';
+import { Link } from 'react-router-dom'
 
 const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
@@ -118,7 +117,6 @@ function RenderComment({cmts,addComments,dishId}){
 function Dish(props){
     //dish is in props
     var dish=props.dish;
-    alert(dish)
     console.log(dish)
     if(props.dishLoading)
         return(
