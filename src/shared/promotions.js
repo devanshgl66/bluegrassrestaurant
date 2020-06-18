@@ -2,7 +2,7 @@ export const PROMOTIONS = [
     {
       id: 0,
       name: 'Weekend Grand Buffet',
-      image: '/bluegrassrestaurant/static/media/buffet.96d6bd20.png',
+      image: 'assets/images/buffet.png',
       label: 'New',
       price: '19.99',
       featured: true,
