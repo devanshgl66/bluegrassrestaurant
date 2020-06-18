@@ -1,26 +1,30 @@
 {
   "files": {
-    "main.css": "/restaurant/static/css/main.e03eb87c.chunk.css",
-    "main.js": "/restaurant/static/js/main.d23f94ca.chunk.js",
-    "main.js.map": "/restaurant/static/js/main.d23f94ca.chunk.js.map",
-    "runtime-main.js": "/restaurant/static/js/runtime-main.302e9cde.js",
-    "runtime-main.js.map": "/restaurant/static/js/runtime-main.302e9cde.js.map",
-    "static/css/2.4f1d8480.chunk.css": "/restaurant/static/css/2.4f1d8480.chunk.css",
-    "static/js/2.19c1b5a6.chunk.js": "/restaurant/static/js/2.19c1b5a6.chunk.js",
-    "static/js/2.19c1b5a6.chunk.js.map": "/restaurant/static/js/2.19c1b5a6.chunk.js.map",
-    "index.html": "/restaurant/index.html",
-    "precache-manifest.3e70cbd18d6b41b69f998148b45e0fcf.js": "/restaurant/precache-manifest.3e70cbd18d6b41b69f998148b45e0fcf.js",
-    "service-worker.js": "/restaurant/service-worker.js",
-    "static/css/2.4f1d8480.chunk.css.map": "/restaurant/static/css/2.4f1d8480.chunk.css.map",
-    "static/css/main.e03eb87c.chunk.css.map": "/restaurant/static/css/main.e03eb87c.chunk.css.map",
-    "static/js/2.19c1b5a6.chunk.js.LICENSE.txt": "/restaurant/static/js/2.19c1b5a6.chunk.js.LICENSE.txt",
-    "static/media/font-awesome.min.css": "/restaurant/static/media/fontawesome-webfont.fee66e71.woff"
+    "main.css": "/bluegrassrestaurant/static/css/main.e03eb87c.chunk.css",
+    "main.js": "/bluegrassrestaurant/static/js/main.c89b8817.chunk.js",
+    "main.js.map": "/bluegrassrestaurant/static/js/main.c89b8817.chunk.js.map",
+    "runtime-main.js": "/bluegrassrestaurant/static/js/runtime-main.a70fd098.js",
+    "runtime-main.js.map": "/bluegrassrestaurant/static/js/runtime-main.a70fd098.js.map",
+    "static/css/2.83a012ef.chunk.css": "/bluegrassrestaurant/static/css/2.83a012ef.chunk.css",
+    "static/js/2.8eeb5965.chunk.js": "/bluegrassrestaurant/static/js/2.8eeb5965.chunk.js",
+    "static/js/2.8eeb5965.chunk.js.map": "/bluegrassrestaurant/static/js/2.8eeb5965.chunk.js.map",
+    "index.html": "/bluegrassrestaurant/index.html",
+    "precache-manifest.fa0b6c51c2061a1c65bac92438c06fc2.js": "/bluegrassrestaurant/precache-manifest.fa0b6c51c2061a1c65bac92438c06fc2.js",
+    "service-worker.js": "/bluegrassrestaurant/service-worker.js",
+    "static/css/2.83a012ef.chunk.css.map": "/bluegrassrestaurant/static/css/2.83a012ef.chunk.css.map",
+    "static/css/main.e03eb87c.chunk.css.map": "/bluegrassrestaurant/static/css/main.e03eb87c.chunk.css.map",
+    "static/js/2.8eeb5965.chunk.js.LICENSE.txt": "/bluegrassrestaurant/static/js/2.8eeb5965.chunk.js.LICENSE.txt",
+    "static/media/alberto.png": "/bluegrassrestaurant/static/media/alberto.ea8ecac0.png",
+    "static/media/elaicheesecake.png": "/bluegrassrestaurant/static/media/elaicheesecake.a1c19f6d.png",
+    "static/media/font-awesome.min.css": "/bluegrassrestaurant/static/media/fontawesome-webfont.fee66e71.woff",
+    "static/media/uthappizza.png": "/bluegrassrestaurant/static/media/uthappizza.c8fcf9ae.png",
+    "static/media/zucchipakoda.png": "/bluegrassrestaurant/static/media/zucchipakoda.e54b2833.png"
   },
   "entrypoints": [
-    "static/js/runtime-main.302e9cde.js",
-    "static/css/2.4f1d8480.chunk.css",
-    "static/js/2.19c1b5a6.chunk.js",
+    "static/js/runtime-main.a70fd098.js",
+    "static/css/2.83a012ef.chunk.css",
+    "static/js/2.8eeb5965.chunk.js",
     "static/css/main.e03eb87c.chunk.css",
-    "static/js/main.d23f94ca.chunk.js"
+    "static/js/main.c89b8817.chunk.js"
   ]
 }
