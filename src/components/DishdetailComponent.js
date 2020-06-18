@@ -3,6 +3,7 @@ import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Butt
 import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom'
+import { Loading } from './Loading';
 
 const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
@@ -120,8 +121,7 @@ function Dish(props){
     console.log(dish)
     if(props.dishLoading)
         return(
-            // <Loading/>
-            <h1>Loading</h1>
+            <Loading/>
         )
     else if(props.disherrMsg)
         return(

@@ -59,12 +59,12 @@ class Main extends Component {
       <div>
         <Header/>
         <Switch>
-              <Route path='/home' component={HomePage} />
-              <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} />} />
-              <Route path='/menu/:dishId' component={DishWithId}/>
-              <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}/>}/>
-              <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
-              <Redirect to="/home"/>
+              <Route path='/bluegrassrestaurant/home' component={HomePage} />
+              <Route exact path='/bluegrassrestaurant/menu' component={() => <Menu dishes={this.props.dishes} />} />
+              <Route path='/bluegrassrestaurant/menu/:dishId' component={DishWithId}/>
+              <Route exact path='/bluegrassrestaurant/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm}/>}/>
+              <Route exact path='/bluegrassrestaurant/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
+              <Redirect to="/bluegrassrestaurant/home"/>
           </Switch>
         <Footer/>
       </div>

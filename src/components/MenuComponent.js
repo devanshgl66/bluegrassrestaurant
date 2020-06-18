@@ -5,7 +5,7 @@ import { Loading } from './Loading';
 function RenderMenuItem({dish}){
     return (
         <Card key={dish.id} >
-            <Link to={`/menu/${dish.id}`}>
+            <Link to={`/bluegrassrestaurant/menu/${dish.id}`}>
                 <CardImg width='100%' src={dish.image} alt={dish.name}/>
                 <CardImgOverlay>                            
                     <CardTitle >{dish.name}</CardTitle>                         
@@ -37,7 +37,7 @@ function Menu(props){
             <div className='container'>
                 <Breadcrumb>
                     <BreadcrumbItem>
-                        <Link to='/home'>Home</Link>
+                        <Link to='/bluegrassrestaurant/home'>Home</Link>
                     </BreadcrumbItem>
                     <BreadcrumbItem active>Menu</BreadcrumbItem>
                 </Breadcrumb>

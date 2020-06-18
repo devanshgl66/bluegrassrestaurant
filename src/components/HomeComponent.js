@@ -1,12 +1,11 @@
 import React from 'react';
-import { Card, CardImg, CardText, CardBody,
-    CardTitle, CardSubtitle} from 'reactstrap';
+import { Card, CardImg, CardText, CardBody,CardTitle, CardSubtitle} from 'reactstrap';
 import {Loading} from '../components/Loading'
+import uthappizza from '../assets/images/uthappizza.png'
 function RenderCard(props) {
     var isLoading=props.isLoading,
         item=props.item,
         errMsg=props.errMsg
-        console.log(props)
     if (isLoading)
         return(
             <Loading/>
@@ -15,17 +14,20 @@ function RenderCard(props) {
         return(
             <h4>{errMsg}</h4>
         )
-    else 
+    else {
+        console.log(uthappizza);
+        console.log(item.image)
         return(
             <Card>
                 <CardImg src={item.image} alt={item.name} />
+
                 <CardBody>
                 <CardTitle>{item.name}</CardTitle>
                 {item.designation ? <CardSubtitle>{item.designation}</CardSubtitle> : null }
                 <CardText>{item.description}</CardText>
                 </CardBody>
             </Card>
-        );
+        );}
 
 }
 
