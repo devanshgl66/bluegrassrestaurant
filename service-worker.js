@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/bluegrassrestaurant/precache-manifest.5da8bc138b7618584b01f16144a8a567.js"
+  "/bluegrassrestaurant/precache-manifest.e100bd9ab925345689b08c238340eefa.js"
 );
 
 self.addEventListener('message', (event) => {
