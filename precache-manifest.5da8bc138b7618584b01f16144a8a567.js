@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b79cb025dd5e974ee314ee663a5e5b42",
+    "revision": "455c7d09f9a6d50cc876286f3865ca4b",
     "url": "/bluegrassrestaurant/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bluegrassrestaurant/static/css/2.83a012ef.chunk.css"
   },
   {
-    "revision": "3339358811362976a16b",
+    "revision": "7d1dc33fba89096ea2cc",
     "url": "/bluegrassrestaurant/static/css/main.e03eb87c.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bluegrassrestaurant/static/js/2.8eeb5965.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "3339358811362976a16b",
-    "url": "/bluegrassrestaurant/static/js/main.c89b8817.chunk.js"
+    "revision": "7d1dc33fba89096ea2cc",
+    "url": "/bluegrassrestaurant/static/js/main.cf676d80.chunk.js"
   },
   {
     "revision": "9aec33e4490ec5e566c3",
