@@ -1,7 +1,8 @@
 import React from 'react';
 import { Card, CardImg, CardText, CardBody,CardTitle, CardSubtitle} from 'reactstrap';
 import {Loading} from '../components/Loading'
-import uthappizza from '../assets/images/uthappizza.png'
+import { BaseUrl } from '../shared/baseUrl';
+import {FadeTransform} from 'react-animation-components'
 function RenderCard(props) {
     var isLoading=props.isLoading,
         item=props.item,
@@ -15,11 +16,13 @@ function RenderCard(props) {
             <h4>{errMsg}</h4>
         )
     else {
-        console.log(uthappizza);
-        console.log(item.image)
         return(
+            <FadeTransform in  
+            transformProps={{
+                exitTransform: 'scale(0.5) translateY(-50%)'
+            }}>
             <Card>
-                <CardImg src={item.image} alt={item.name} />
+                <CardImg src={BaseUrl + item.image} alt={item.name} />
 
                 <CardBody>
                 <CardTitle>{item.name}</CardTitle>
@@ -27,25 +30,24 @@ function RenderCard(props) {
                 <CardText>{item.description}</CardText>
                 </CardBody>
             </Card>
+            </FadeTransform>
         );}
 
 }
 
 function Home(props) {
-    console.log('home') 
-    console.log(props)
     return(
         <div className="container">
             <div className="row align-items-start">
                 <div className="col-12 col-md m-1">
                     <RenderCard item={props.dish}
-                        isLoading={props.isLoading} 
-                        errMsg={props.errMsg}
+                        isLoading={props.dishesLoading} 
+                        errMsg={props.dishErrMess}
                     />
                     {/* <p>{props.dish.name}</p> */}
                 </div>
                 <div className="col-12 col-md m-1">
-                    <RenderCard item={props.promotion} />
+                <RenderCard item={props.promotion} isLoading={props.promoLoading} errMess={props.promoErrMess} />
                 </div>
                 <div className="col-12 col-md m-1">
                     <RenderCard item={props.leader} />

@@ -1,17 +1,17 @@
 //This file contains seperate reducers for comments
-import {COMMENTS} from '../shared/comments'
 import * as ActionType from './ActionType'
 
-export const Comments=(state=COMMENTS,action)=>{
+export const Comments=(state={ errMess: null, comments:[]},action)=>{
     switch(action.type){
         case ActionType.ADD_COMMENTS:
-            var comments=action.payload
-            comments.id=state.length
-            comments.date=new Date().toISOString()
-            console.log(comments)
-            //it should return a new immutable state and should not change the given state in any way
-            console.log(state.concat(comments))
-            return state.concat(comments)
+            return {...state, errMess: null, comments: action.payload};
+        
+            case ActionType.COMMENTS_FAILED:
+            return {...state, errMess: action.payload};
+        
+            case ActionType.ADD_COMMENT:
+                var comment = action.payload;
+                return { ...state, comments: state.comments.concat(comment)};
         default:
             return state
     }

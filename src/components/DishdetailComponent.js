@@ -4,16 +4,21 @@ import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom'
 import { Loading } from './Loading';
-
+import {BaseUrl} from '../shared/baseUrl'
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
+import {FadeTransform ,Fade,Stagger} from 'react-animation-components'
 const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
 const maxLength=(len)=>(val)=>!val || val.length<=len
 
-const handleCmtForm=(values,addComments,dishId)=>{
+const handleCmtForm=(values,postComments,dishId)=>{
     console.log(values)
-    addComments(dishId,values.comment,values.author,values.rating)
+    console.log(postComments)
+    postComments(dishId,values.rating,values.author,values.comments)
+
 }
-function CommentForm({addComments,dishId}){
+function CommentForm({postComment,dishId}){
+    console.log(postComment)
     var [isCmtFormOpen,updateCmtFormOpen]=useState(false)
     const toggleCmtFormOpen=()=>{updateCmtFormOpen(!isCmtFormOpen);}
     return(
@@ -25,7 +30,7 @@ function CommentForm({addComments,dishId}){
             >
                 <ModalHeader>Submit Comments</ModalHeader>
                 <ModalBody>
-                    <LocalForm onSubmit={(values)=>handleCmtForm(values,addComments,dishId)}>
+                    <LocalForm onSubmit={(values)=>{handleCmtForm(values,postComment,dishId);toggleCmtFormOpen()}}>
                         <Row className='form-group'>
                             <Col>
                                 <Label htmlFor='rating'>Rating</Label>
@@ -66,7 +71,18 @@ function CommentForm({addComments,dishId}){
                             <Label htmlFor='comments' md={4}>Comments</Label>
                             <Col md={10}>
                                 <Control.textarea model='.comments' rows='6' id='comments' name='comments'
-                                placeholder='Comments' className='form-control' />
+                                placeholder='Comments' className='form-control' 
+                                validators={{
+                                    required
+                                }} />
+                                <Errors
+                                className='text-danger'
+                                model='.author'
+                                show='touched'
+                                messages={{
+                                    required:'Required'                                    
+                                }}
+                                />
                             </Col>
                         </Row>
                         <Row>
@@ -82,21 +98,23 @@ function CommentForm({addComments,dishId}){
         </div>
     )
 }
-function RenderComment({cmts,addComments,dishId}){
+function RenderComment({cmts,postComments,dishId}){
     if(cmts){
         const comments=cmts.map((comment)=>{
-            return (
-                <li key={comment.id}>
-                    <p>{comment.comment}</p>
-                    <p>-- {comment.author},
-                    &nbsp;
-                    {new Intl.DateTimeFormat('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: '2-digit'
-                        }).format(new Date(comment.date))}
-                    </p>
-                </li>
+            return (                
+                <Fade in>
+                    <li key={comment.id}>
+                        <p>{comment.comment}</p>
+                        <p>-- {comment.author},
+                        &nbsp;
+                        {new Intl.DateTimeFormat('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: '2-digit'
+                            }).format(new Date(comment.date))}
+                        </p>
+                    </li>
+                </Fade>
             )
         })
         return(
@@ -105,11 +123,12 @@ function RenderComment({cmts,addComments,dishId}){
                     <CardBody>
                         <h4>Comments</h4>
                         <ul className='list-unstyled'>
-                            {comments}
+                            <Stagger in>
+                                {comments}
+                            </Stagger>    
                         </ul>
-
                     </CardBody>
-                    <CommentForm addComments={addComments} dishId={dishId}/>
+                    <CommentForm postComment={postComments} dishId={dishId}/>
                 </Card>
             </div>
         )
@@ -118,15 +137,14 @@ function RenderComment({cmts,addComments,dishId}){
 function Dish(props){
     //dish is in props
     var dish=props.dish;
-    console.log(dish)
+    console.log(props.dishLoading)
     if(props.dishLoading)
         return(
             <Loading/>
         )
     else if(props.disherrMsg)
         return(
-            // <h4>{props.disherrMsg}</h4>
-            <h1>Error</h1>
+            <h4>{props.disherrMsg}</h4>
         )
     else if(dish){
         return(
@@ -139,17 +157,23 @@ function Dish(props){
                 </div>
                 <div className='row'>
                     <div className="col-12 col-md-5 m-1"> 
+                        <FadeTransform
+                    in
+                    transformProps={{
+                        exitTransform: 'scale(0.5) translateY(-50%)'
+                    }}>
                         <Card>
-                            <CardImg width='100%' src={dish.image} alt={dish.name}/>
+                        <CardImg top src={BaseUrl + dish.image} alt={dish.name} />
                             <CardBody>                            
                                 <CardTitle >{dish.name}</CardTitle>
                                 <CardText>{dish.description}</CardText>
                             </CardBody>
                         </Card>
+                    </FadeTransform>
                     </div>
                     <div className="col-12 col-md-5 m-1"> 
                         <RenderComment cmts={props.comments}
-                        addComments={props.addComments}  dishId={props.dish.id}/>                        
+                        postComments={props.postComment}  dishId={props.dish.id}/>                        
                     </div>
                 </div>
                 <h1>{props.dishLoading}</h1>
@@ -157,7 +181,7 @@ function Dish(props){
         )
     }
     else{
-        return(<div></div>)
+        return(<h1>Error occured</h1>)
     }
 }
 export default Dish;
