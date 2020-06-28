@@ -48,6 +48,7 @@ export const fetchDishes=()=>(dispatch)=>{
     .then((response)=>{
         dispatch(addDishes(response))
     })
+    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
 }
 export const fetchComments = () => (dispatch) => {    
     return fetch(BaseUrl + 'comments')
@@ -66,7 +67,8 @@ export const fetchComments = () => (dispatch) => {
     }
     )
     .then(response => response.json())
-    .then(comments => dispatch(addComment(comments)));
+    .then(comments => dispatch(addComment(comments)))
+    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
 };
 export const addComment = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
@@ -129,7 +131,8 @@ export const fetchPromos = () => (dispatch) => {
         throw error
     })
     .then(response => response.json())
-    .then(promos => dispatch(addPromos(promos)));
+    .then(promos => dispatch(addPromos(promos)))
+    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
 }
 
 export const promosLoading = () => ({
@@ -145,3 +148,68 @@ export const addPromos = (promos) => ({
     type: ActionTypes.ADD_PROMOS,
     payload: promos
 });
+
+export const addLeader=(leaders)=>({
+    type:ActionTypes.ADD_LEADERS,
+    payload:leaders
+})
+
+export const leaderLoading=()=>({
+    type:ActionTypes.LEADER_LOADING
+})
+export const leaderFailed=(err)=>({
+    type:ActionTypes.LEADER_FAILED,
+    payload:err
+})
+
+export const fetchleader=()=>(dispatch)=>{
+    dispatch(leaderLoading())
+
+    fetch(BaseUrl+'leaders')
+    .then((response)=>{
+        if (response.ok)
+            return response
+        else{
+            var err=new Error('Error '+response.status+':'+response.statusText)
+            err.response=response.statusText
+            throw err
+        }
+    },
+    err=>{
+        throw err
+    })
+    .then((response)=>response.json())
+    .then((leader)=>{
+        dispatch(addLeader(leader))
+    })
+    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+}
+
+export const postFeedback=(values)=>(dispatch)=>{
+    fetch(BaseUrl+'feedback',{
+        method:'post',
+        credentials:'same-origin',
+        body:JSON.stringify(values),
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then((response)=>{
+        if (response.ok)
+            return response
+        else{var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+      }
+    },
+    error => {
+          throw error;
+    })
+    .then((response)=>response.json())
+    .then((response)=>alert(JSON.stringify(response)))
+    .catch(error=>
+        {
+             console.log('post feedback', error.message); 
+             alert('Your feedback could not be posted\nError: '+error.message);
+         })
+}
