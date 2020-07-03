@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label, Col} from 'reactstrap';
 import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
@@ -15,10 +15,8 @@ const handleCmtForm=(values,postComments,dishId)=>{
     console.log(values)
     console.log(postComments)
     postComments(dishId,values.rating,values.author,values.comments)
-
 }
 function CommentForm({postComment,dishId}){
-    console.log(postComment)
     var [isCmtFormOpen,updateCmtFormOpen]=useState(false)
     const toggleCmtFormOpen=()=>{updateCmtFormOpen(!isCmtFormOpen);}
     return(
@@ -99,13 +97,14 @@ function CommentForm({postComment,dishId}){
     )
 }
 function RenderComment({cmts,postComments,dishId}){
+
     if(cmts){
         const comments=cmts.map((comment)=>{
             return (                
                 <Fade in>
                     <li key={comment.id}>
                         <p>{comment.comment}</p>
-                        <p>-- {comment.author},
+                        <p>-- {comment.author.firstname} {comment.author.lastname},
                         &nbsp;
                         {new Intl.DateTimeFormat('en-US', {
                                 year: 'numeric',
@@ -134,55 +133,69 @@ function RenderComment({cmts,postComments,dishId}){
         )
     }
 }
-function Dish(props){
-    //dish is in props
-    var dish=props.dish;
-    console.log(props.dishLoading)
-    if(props.dishLoading)
-        return(
-            <Loading/>
-        )
-    else if(props.disherrMsg)
-        return(
-            <h4>{props.disherrMsg}</h4>
-        )
-    else if(dish){
-        return(
-            <div className='container'>
-                <div className='row'>
-                    <Breadcrumb>
-                        <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
-                        <BreadcrumbItem active>{props.dish.name}</BreadcrumbItem>
-                    </Breadcrumb>
-                </div>
-                <div className='row'>
-                    <div className="col-12 col-md-5 m-1"> 
-                        <FadeTransform
-                            in
-                            transformProps={{
-                                exitTransform: 'scale(0.5) translateY(-50%)'
-                            }}
-                        >
-                            <Card>
-                            <CardImg top src={BaseUrl + dish.image} alt={dish.name} />
-                                <CardBody>                            
-                                    <CardTitle >{dish.name}</CardTitle>
-                                    <CardText>{dish.description}</CardText>
-                                </CardBody>
-                            </Card>
-                        </FadeTransform>
+class Dish extends Component{
+    // constructor(props){
+    //     super(props);
+    //     var dishId=window.location.href.split('/');
+    //     dishId=dishId[dishId.length-1]
+    //     // console.log(dishId)
+    //     props.fetchComments(dishId);
+    // }
+    
+    render(){
+        //dish is in props
+        var dish=this.props.dish;
+        // console.log(window.location)
+        if(this.props.dishLoading)
+            return(
+                <Loading/>
+            )
+        else if(this.props.disherrMsg)
+            return(
+                <h4>{this.props.disherrMsg}</h4>
+                // <div>Error</div>
+            )
+        else if(dish){
+            // console.log(this.props.comment)
+            // if(!this.props.comment)
+            console.log(this.props.dish.comments)
+            return(
+                <div className='container'>
+                    <div className='row'>
+                        <Breadcrumb>
+                            <BreadcrumbItem><Link to='/menu'>Menu</Link></BreadcrumbItem>
+                            <BreadcrumbItem active>{this.props.dish.name}</BreadcrumbItem>
+                        </Breadcrumb>
                     </div>
-                    <div className="col-12 col-md-5 m-1"> 
-                        <RenderComment cmts={props.comments}
-                        postComments={props.postComment}  dishId={props.dish.id}/>                        
+                    <div className='row'>
+                        <div className="col-12 col-md-5 m-1"> 
+                            <FadeTransform
+                                in
+                                transformProps={{
+                                    exitTransform: 'scale(0.5) translateY(-50%)'
+                                }}
+                            >
+                                <Card>
+                                <CardImg top src={BaseUrl + dish.image} alt={dish.name} />
+                                    <CardBody>                            
+                                        <CardTitle >{dish.name}</CardTitle>
+                                        <CardText>{dish.description}</CardText>
+                                    </CardBody>
+                                </Card>
+                            </FadeTransform>
+                        </div>
+                        <div className="col-12 col-md-5 m-1"> 
+                            <RenderComment cmts={this.props.dish.comments}
+                            postComments={this.props.postComment}  dishId={this.props.dish.id}/>                        
+                        </div>
                     </div>
+                    <h1>{this.props.dishLoading}</h1>
                 </div>
-                <h1>{props.dishLoading}</h1>
-            </div>
-        )
-    }
-    else{
-        return(<h1>Error occured</h1>)
+            )
+        }
+        else{
+            return(<h1>Error occured</h1>)
+        }
     }
 }
 export default Dish;

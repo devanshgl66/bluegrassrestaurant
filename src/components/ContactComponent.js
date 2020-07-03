@@ -15,7 +15,7 @@ class Contact extends Component {
         console.log(props)
     }
     handleSubmit(values,postfeedback){
-        // console.log(JSON.stringify(values))
+        console.log(JSON.stringify(values))
         // alert(JSON.stringify(values))
         // console.log(postfeedback)
         postfeedback(values)
@@ -95,21 +95,8 @@ class Contact extends Component {
                                 <Label htmlFor="lastname" md={2}>Last Name</Label>
                                 <Col md={10}>
                                     <Control.text model=".lastname" id="lastname" name="lastname"
-                                        placeholder="Last Name" className='form-control'
-                                        validators={{
-                                            minLength:minLength(3),maxLength:maxLength(10)
-                                        }}
-                                    />
-                                    <Errors
-                                        model='.lastname'
-                                        className='text-danger'
-                                        show='touched'
-                                        messages={{
-                                            minLength:'Last name should be 3 character long',
-                                            maxLength:'Last name should be upto 10 characters'
-                                        }}
-                                    />
-
+                                        placeholder="Last Name" className='form-control'                                        
+                                    />                        
                                 </Col>                        
                             </Row>
                             <Row className='form-group'>
@@ -175,7 +162,7 @@ class Contact extends Component {
                             <Row className='form-group'>
                                 <Label htmlFor="message" md={2}>Your Feedback</Label>
                                 <Col md={10}>
-                                    <Control.textarea model=".message" id="message" name="message"
+                                    <Control.textarea model=".feedback" id="message" name="feedback"
                                         rows="12" className='form-control'/>
                                 </Col>
                             </Row>

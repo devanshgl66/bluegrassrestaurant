@@ -9,6 +9,7 @@ import {feedback} from './form'
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
 import { createForms } from 'react-redux-form'
+import { Login } from './Login'
 
 export const ConfigStore=()=>{
     const store=createStore(combineReducers({
@@ -17,6 +18,7 @@ export const ConfigStore=()=>{
         leaders:Leaders,
         promotions:Promotions,
         comments:Comments,
+        login:Login,
         ...createForms({
             feedback:feedback
         })

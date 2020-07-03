@@ -25,8 +25,10 @@ class Header extends Component {
               isModalOpen:!this.state.isModalOpen
           })
       }
-      handleLogin(event){
-        alert('Username: '+this.username.value+'\nPassword: '+this.password.value+'\nRemember: '+this.remember.value)
+      handleLogin=(login)=>(event)=>{
+        login(this.username.value,this.password.value)
+        this.toggleModal()
+        console.log(event)
         event.preventDefault()
       }
     render() {
@@ -94,7 +96,7 @@ class Header extends Component {
                                 
                             </FormGroup>
                             <FormGroup>
-                                <Button color='primary' onClick={this.handleLogin}>Submit</Button>
+                                <Button color='primary' onClick={this.handleLogin(this.props.login)}>Submit</Button>
                             </FormGroup>
                         </Form>
                     </ModalBody>

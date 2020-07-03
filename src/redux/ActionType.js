@@ -13,3 +13,6 @@ export const LEADER_FAILED='LEADER_FAILED'
 
 export const ADD_COMMENT='ADD_COMMENT'
 export const COMMENTS_FAILED = 'COMMENTS_FAILED'
+
+export const LOGIN='LOGIN'
+export const LOGOUT='LOGOUT'

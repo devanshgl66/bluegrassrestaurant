@@ -27,7 +27,7 @@ export const dishesFailed=(errMsg)=>({
 //This action will call dish loading action and after 2 second will load add dishes
 export const fetchDishes=()=>(dispatch)=>{
     dispatch(dishesLoading(true))
-    console.log('Url:'+BaseUrl)
+    // console.log('Url:'+BaseUrl)
     fetch(BaseUrl+'dishes')
     .then((response)=>{
         if(response.ok)
@@ -46,13 +46,16 @@ export const fetchDishes=()=>(dispatch)=>{
         return response.json()
     })
     .then((response)=>{
+        // alert(JSON.stringify(response))
         dispatch(addDishes(response))
     })
-    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+    .catch(error =>  { console.log('fetching dishes', error.message); });
 }
-export const fetchComments = () => (dispatch) => {    
-    return fetch(BaseUrl + 'comments')
+export const fetchComments = (dishId) => (dispatch) => { 
+    // alert(dishId)   
+    fetch(BaseUrl+'dishes/'+dishId+'/comments')
     .then((response)=>{
+        // alert(JSON.stringify(response))
         if(response.ok)
             return response
         else{
@@ -60,15 +63,14 @@ export const fetchComments = () => (dispatch) => {
             err.response=response
             throw err
         }
-    },
-    error=>{
+    }, error=>{
         var errmess = new Error(error.message);
         throw errmess;
     }
     )
     .then(response => response.json())
     .then(comments => dispatch(addComment(comments)))
-    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+    .catch(error =>  { console.log('fetch comments', error.message);  });
 };
 export const addComment = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
@@ -84,13 +86,13 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     };
     newComment.date = new Date().toISOString();
     
-    return fetch(BaseUrl + 'comments', {
-        method: "POST",
+    return fetch(BaseUrl + 'dishes/'+dishId+'/comments', {
+        method: 'POST',
         body: JSON.stringify(newComment),
         headers: {
-          "Content-Type": "application/json"
+          "content-type": "application/json"
         },
-        credentials: "same-origin"
+        credentials: "include"
     })
     .then(response => {
         if (response.ok) {
@@ -119,20 +121,22 @@ export const fetchPromos = () => (dispatch) => {
 
     return fetch(BaseUrl + 'promotions')
     .then((response)=>{
-        if (response.ok)
+        if(response.ok)
             return response
         else{
             var err=new Error('Error '+response.status+': '+response.statusText)
-            err.message=response.statusText
+            err.response=response
             throw err
         }
     },
     error=>{
-        throw error
-    })
+        var errmess = new Error(error.message);
+        throw errmess;
+    }
+    )
     .then(response => response.json())
     .then(promos => dispatch(addPromos(promos)))
-    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+    .catch(error =>  { console.log('fetch promos', error.message);  });
 }
 
 export const promosLoading = () => ({
@@ -182,13 +186,13 @@ export const fetchleader=()=>(dispatch)=>{
     .then((leader)=>{
         dispatch(addLeader(leader))
     })
-    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+    .catch(error =>  { console.log('post comments', error.message);  });
 }
 
 export const postFeedback=(values)=>(dispatch)=>{
     fetch(BaseUrl+'feedback',{
         method:'post',
-        credentials:'same-origin',
+        credentials:'include',
         body:JSON.stringify(values),
         headers:{
             'content-type':'application/json'
@@ -206,10 +210,50 @@ export const postFeedback=(values)=>(dispatch)=>{
           throw error;
     })
     .then((response)=>response.json())
-    .then((response)=>alert(JSON.stringify(response)))
+    .then((response)=>alert('Your feedback is send.'))
     .catch(error=>
         {
              console.log('post feedback', error.message); 
              alert('Your feedback could not be posted\nError: '+error.message);
          })
+}
+export const login=(username,password)=>(dispatch)=>{
+    var values={username:username,password:password}
+    fetch(BaseUrl+'users/login',{
+        method:'POST',
+        credentials:'include',
+        body:JSON.stringify(values),
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.message = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(response =>  {
+        if(response.sucess)
+            dispatch(loginsuccess)
+        else
+            dispatch(loginfailed)
+        alert(response.status)
+    })
+    .catch(error =>  { console.log('Login error', error.message); alert('Login Failed\nError: '+(error.message.statusText)); });
+}
+export const loginsuccess={
+    type:ActionTypes.LOGIN,
+    payload:{login:true}
+}
+export const loginfailed={
+    type:ActionTypes.LOGIN,
+    payload:{login:false}
 }
