@@ -13,6 +13,16 @@ export const Dishes=(state={
             return {...state,isLoading:false,errMsg:action.payload}
         case ActionType.DISHES_LOADING:
             return {...state,isLoading:true,dishes:[],errMsg:null}
+        case ActionType.REFRESH_DISH:
+            var dish=state.dishes.map((dish)=>{
+                if (dish.id===action.payload.id)
+                    return action.payload
+                else
+                    return dish
+            })
+            // console.log()
+            return{...state,dishes:dish}
+            // return state
         default:
             return state
     }

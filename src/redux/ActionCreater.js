@@ -5,6 +5,7 @@
 import * as ActionTypes from './ActionType'
 import {BaseUrl} from '../shared/baseUrl'
 import {fetch} from 'cross-fetch'
+import cookie from 'react-cookies'
 //addComments is a action.
 export const addComments=(comment)=>({
     type:ActionTypes.ADD_COMMENT,
@@ -107,9 +108,13 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
             throw error;
       })
     .then(response => response.json())
-    .then(response => dispatch(addComments(response)))
+    .then(response => dispatch(refreshDish(response)))
     .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
 };
+export const refreshDish=(dish)=>({
+    type:ActionTypes.REFRESH_DISH,
+    payload:dish
+})
 export const commentsFailed = (errmess) => ({
     type: ActionTypes.COMMENTS_FAILED,
     payload: errmess
@@ -228,9 +233,12 @@ export const login=(username,password)=>(dispatch)=>{
         }
     })
     .then(response => {
+        console.log(response)
         if (response.ok) {
           return response;
         } else {
+            if(response.status===401)
+                response.statusText='Invalid username or password'
           var error = new Error('Error ' + response.status + ': ' + response.statusText);
           error.message = response;
           throw error;
@@ -241,11 +249,16 @@ export const login=(username,password)=>(dispatch)=>{
       })
     .then(response => response.json())
     .then(response =>  {
-        if(response.sucess)
+        // console.log(response.success)
+        alert(response.status)  
+        cookie.remove('login',{path:'/'})
+        cookie.save('login',true,{path:'/'})
+        if(response.success){
+            // alert('sdg')
             dispatch(loginsuccess)
+        }
         else
             dispatch(loginfailed)
-        alert(response.status)
     })
     .catch(error =>  { console.log('Login error', error.message); alert('Login Failed\nError: '+(error.message.statusText)); });
 }
@@ -257,3 +270,84 @@ export const loginfailed={
     type:ActionTypes.LOGIN,
     payload:{login:false}
 }
+export const logout=()=>(dispatch)=>{
+    fetch(BaseUrl+'users/logout',{
+        method:'post',
+        credentials:'include',
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then((response)=>{
+        if(response.ok)
+            return response
+        else{
+            alert(JSON.stringify(response))
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.message = response;
+            throw error;
+        }
+    })
+    .then(response=>response.json())
+    .then((response)=>{
+        cookie.remove('login',{path:'/'})
+        cookie.save('login',false,{path:'/'})
+        alert(response.status)
+        dispatch(loginfailed)
+    })
+    .catch(error =>  { console.log('Logout error', error.message); alert('Logout Failed\nError: '+(error.message.statusText)); });
+}
+export const register=(user)=>(dispatch)=>{
+    fetch(BaseUrl+'users/signup',{
+        method:'post',
+        credentials:'include',
+        body:JSON.stringify(user),
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then((response)=>{
+        if(response.ok)
+            return response
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.message = response;
+            throw error;
+        }
+    })
+    .then(response=>response.json())
+    .then(response=>{
+        alert(response.status)
+    })
+    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message.statusText)); });
+}
+export const availableUName=(username)=>(dispatch)=>{
+    fetch(BaseUrl+'users/availableUName',{
+        method:'post',
+        body:JSON.stringify({username:username}),
+        headers:{
+            'content-type':'application/json'
+        },
+        credentials:'include'
+    })
+    .then(response=>{
+        // console.log(response)
+        if(response.ok)
+            return response
+        else{
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.message = response;
+            throw error;
+        }
+    })
+    .then(response=>response.json())
+    .then(response=>{
+        console.log(response)
+        dispatch(usernameAvailable(response.available))
+    } )
+    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message.statusText)); });
+}
+export const usernameAvailable=(ava)=>({
+    type:ActionTypes.AVAILABLEUSERNAME,
+    payload:ava
+})

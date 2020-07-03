@@ -8,7 +8,7 @@ import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import { connect } from 'react-redux';
-import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login } from '../redux/ActionCreater';//addComments is an action
+import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 const mapDispatchToProps=(dispatch)=>({
@@ -20,14 +20,18 @@ const mapDispatchToProps=(dispatch)=>({
   postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment,dishId)),
   fetchLeaders:()=>dispatch(fetchleader()),
   postfeedback:(values)=>dispatch(postFeedback(values)),
-  login:(username,password)=>dispatch(login(username,password))
+  login:(username,password)=>dispatch(login(username,password)),
+  logout:()=>dispatch(logout()),
+  register:(user)=>dispatch(register(user)),
+  availableUName:(username)=>dispatch(availableUName(username))
 })
 const mapStateToProps=(state)=>{
   return {
     dishes:state.dishes,
     comments: state.comments,
     promotions: state.promotions,
-    leaders: state.leaders
+    leaders: state.leaders,
+    loginState:state.loginState
   }
 }
 class Main extends Component {
@@ -42,6 +46,8 @@ class Main extends Component {
     this.setState({ selectedDish: dishId});
   }
   render() {
+    // console.log(this.props.availableUName('admin'))
+    // console.log(this.props.login)
     const HomePage=()=>{
       return(
         <Home
@@ -71,9 +77,10 @@ class Main extends Component {
         />
       )
     }
+    // console.log(this.props.logout.toString())
     return (
       <div>
-        <Header login={this.props.login}/>
+        <Header login={this.props.login} loginState={this.props.loginState} logout={this.props.logout} register={this.props.register} availableUName={this.props.availableUName}/>
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
             <Switch location={this.props.location}>

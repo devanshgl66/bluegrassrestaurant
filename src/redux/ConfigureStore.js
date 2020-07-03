@@ -18,7 +18,7 @@ export const ConfigStore=()=>{
         leaders:Leaders,
         promotions:Promotions,
         comments:Comments,
-        login:Login,
+        loginState:Login,
         ...createForms({
             feedback:feedback
         })

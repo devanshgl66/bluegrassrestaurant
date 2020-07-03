@@ -5,7 +5,7 @@ import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom'
 import { Loading } from './Loading';
 import {BaseUrl} from '../shared/baseUrl'
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
+// import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {FadeTransform ,Fade,Stagger} from 'react-animation-components'
 const required=(val)=>val && val.length
 const minLength=(len)=>(val)=>val && val.length>=len
@@ -43,7 +43,7 @@ function CommentForm({postComment,dishId}){
                                 </Control.select>
                             </Col>
                         </Row>
-                        <Row className='form-group'>
+                        {/* <Row className='form-group'>
                             <Label htmlFor="name" md={4}>Your Name:</Label>
                             <Col md={10}>
                                 <Control.text model='.author' id='name' name='name'
@@ -64,7 +64,7 @@ function CommentForm({postComment,dishId}){
                                 }}
                                 />
                             </Col>
-                        </Row>
+                        </Row> */}
                         <Row className='form-group'>
                             <Label htmlFor='comments' md={4}>Comments</Label>
                             <Col md={10}>

@@ -48,7 +48,7 @@ class Contact extends Component {
                             <br />
                             <i className="fa fa-phone"></i>: +852 1234 5678<br />
                             <i className="fa fa-fax"></i>: +852 8765 4321<br />
-                            <i className="fa fa-envelope"></i>: <a href="mailto:bluegrass.net">bluegrass@food.net</a>
+                            <i className="fa fa-envelope"></i>: <a href="mailto:bluegrass@food.net">bluegrass@food.net</a>
                             </address>
                     </div>
                     <div className="col-6 col-sm-6 offset-sm-1">
