@@ -94,7 +94,7 @@ class Main extends Component {
                   <Route path='/bluegrassrestaurant/menu/:dishId' component={DishWithId}/>
                   <Route exact path='/bluegrassrestaurant/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postfeedback={this.props.postfeedback}/>}/>
                   <Route exact path='/bluegrassrestaurant/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
-                  <Redirect to="/home"/>
+                  <Redirect to="/"/>
               </Switch>
             </CSSTransition>
           </TransitionGroup>
