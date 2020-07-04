@@ -177,7 +177,7 @@ export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
         alert('Comment Changed');
         dispatch(refreshDish(dish))
     })
-    .catch(error =>  { console.log('Delete Comment', error.message);  });
+    .catch(error =>  { console.log('Edit Comment Error', error.message);  });
 }
 
 
