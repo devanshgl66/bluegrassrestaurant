@@ -8,7 +8,7 @@ import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import { connect } from 'react-redux';
-import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName } from '../redux/ActionCreater';//addComments is an action
+import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 const mapDispatchToProps=(dispatch)=>({
@@ -23,7 +23,9 @@ const mapDispatchToProps=(dispatch)=>({
   login:(username,password)=>dispatch(login(username,password)),
   logout:()=>dispatch(logout()),
   register:(user)=>dispatch(register(user)),
-  availableUName:(username)=>dispatch(availableUName(username))
+  availableUName:(username)=>dispatch(availableUName(username)),
+  commentDelete:(commentId,dishId)=>dispatch(commentDelete(commentId,dishId)),
+  commentEdit:(commentId,dishId,comment)=>dispatch(commentEdit(commentId,dishId,comment))
 })
 const mapStateToProps=(state)=>{
   return {
@@ -74,6 +76,9 @@ class Main extends Component {
         addComment={this.props.addComment}
         postComment={this.props.postComment}
         fetchComments={this.props.fetchComments}
+        username={this.props.loginState.username}
+        commentDelete={this.props.commentDelete}
+        commentEdit={this.props.commentEdit}        
         />
       )
     }

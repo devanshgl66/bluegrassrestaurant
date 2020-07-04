@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label, Col} from 'reactstrap';
+import React, { Component, Fragment } from 'react'
+import {Card,CardBody,CardTitle,CardImg,CardText,Breadcrumb,BreadcrumbItem, Button, Modal, ModalHeader, ModalBody, Row, Label, Col, Form} from 'reactstrap';
 import { useState } from 'react';
 import { LocalForm, Control, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom'
@@ -33,14 +33,25 @@ function CommentForm({postComment,dishId}){
                             <Col>
                                 <Label htmlFor='rating'>Rating</Label>
                                 <Control.select model='.rating' id='rating' name='rating'
-                                    className='form-control'
-                                >
+                                    className='form- control'
+                                    validators={{
+                                        required
+                                    }} >                                    
+                                    <option>Rating</option>
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
                                     <option>4</option>
                                     <option>5</option>
                                 </Control.select>
+                                <Errors
+                                    className='text-danger'
+                                    model='.author'
+                                    show='touched'
+                                    messages={{
+                                        required:'Required'                                    
+                                    }}
+                                    />
                             </Col>
                         </Row>
                         {/* <Row className='form-group'>
@@ -75,7 +86,7 @@ function CommentForm({postComment,dishId}){
                                 }} />
                                 <Errors
                                 className='text-danger'
-                                model='.author'
+                                model='.comments'
                                 show='touched'
                                 messages={{
                                     required:'Required'                                    
@@ -96,23 +107,84 @@ function CommentForm({postComment,dishId}){
         </div>
     )
 }
-function RenderComment({cmts,postComments,dishId}){
+function RenderComment({cmts,postComments,dishId,username,commentDelete,commentEdit}){
 
-    if(cmts){
+    if(cmts){        
         const comments=cmts.map((comment)=>{
+            var Rating=[]
+            for (var i=0;i<comment.rating;i++)
+                Rating.push(<i class="fa fa-star" style={{'color':'yellow'}}/>)
+            for (i=comment.rating;i<5;i++)
+                Rating.push(<i class="fa fa-star"/>)
+            const CmtsOptions=()=>{
+                const [editCmts,seteditCmts]=useState(false)
+                if(username && username===comment.author.username)
+                    return(
+                        <Fragment>
+                            <Button outline onClick={()=>commentDelete(comment._id,dishId)}>
+                                <i className='fa fa-trash'/>
+                            </Button>
+                            <Button outline onClick={()=>seteditCmts(!editCmts)}>
+                                <i className='fa fa-pencil'/>
+                            </Button>
+                            <Modal isOpen={editCmts} toggle={()=>seteditCmts(!editCmts)}>
+                                <ModalHeader>Edit Comment</ModalHeader>
+                                <ModalBody>
+                                    <LocalForm onSubmit={(values)=>commentEdit(comment._id,dishId,values)}>
+                                        <Row className='form-group'>
+                                            <Label htmlFor='comments' md={4}>Comments</Label>
+                                            <Col md={10}>
+                                                <Control.textarea model='.comment' rows='6' id='comment' name='comment'
+                                                placeholder='Comments' className='form-control' 
+                                                validators={{
+                                                    required
+                                                }} />
+                                                <Errors
+                                                className='text-danger'
+                                                model='.comment'
+                                                show='touched'
+                                                messages={{
+                                                    required:'Required'                                    
+                                                }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                <Button type="submit" color="primary">
+                                                    Send Comments
+                                                </Button>
+                                            </Col>
+                                        </Row>
+                                    </LocalForm>
+                                </ModalBody>
+                            </Modal>
+                        </Fragment>
+                    )
+                else
+                    return (<Fragment></Fragment>)
+            }
             return (                
                 <Fade in>
-                    <li key={comment.id}>
-                        <p>{comment.comment}</p>
-                        <p>-- {comment.author.firstname} {comment.author.lastname},
-                        &nbsp;
-                        {new Intl.DateTimeFormat('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: '2-digit'
-                            }).format(new Date(comment.date))}
-                        </p>
-                    </li>
+                    <Row>
+                        <Col md={9}>
+                            <li key={comment.id}>
+                                {Rating.map(rating=>rating)}                        
+                                <p>{comment.comment}</p>
+                                <p>-- {comment.author.firstname} {comment.author.lastname},
+                                &nbsp;
+                                {new Intl.DateTimeFormat('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: '2-digit'
+                                    }).format(new Date(comment.date))}
+                                </p>
+                            </li>
+                        </Col>
+                        <Col>
+                            <CmtsOptions/>
+                        </Col>
+                    </Row>
                 </Fade>
             )
         })
@@ -186,7 +258,12 @@ class Dish extends Component{
                         </div>
                         <div className="col-12 col-md-5 m-1"> 
                             <RenderComment cmts={this.props.dish.comments}
-                            postComments={this.props.postComment}  dishId={this.props.dish.id}/>                        
+                                postComments={this.props.postComment}  
+                                dishId={this.props.dish.id} 
+                                username={this.props.username}
+                                commentDelete={this.props.commentDelete}
+                                commentEdit={this.props.commentEdit}
+                            />                        
                         </div>
                     </div>
                     <h1>{this.props.dishLoading}</h1>

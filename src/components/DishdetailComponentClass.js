@@ -17,8 +17,10 @@ class Dish extends Component{
     commentDish(dish){
         if(dish){
             const comments=dish.comments.map((comment)=>{
+                alert(comment.rating)
                 return (
                     <li key={comment.id}>
+                        <p>{comment.rating}</p>
                         <p>{comment.comment}</p>
                         <p>-- {comment.author},
                         &nbsp;
@@ -28,6 +30,7 @@ class Dish extends Component{
                                 day: '2-digit'
                             }).format(new Date(comment.date))}
                         </p>
+                        
                     </li>
                 )
             })

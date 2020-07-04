@@ -6,11 +6,7 @@ import * as ActionTypes from './ActionType'
 import {BaseUrl} from '../shared/baseUrl'
 import {fetch} from 'cross-fetch'
 import cookie from 'react-cookies'
-//addComments is a action.
-export const addComments=(comment)=>({
-    type:ActionTypes.ADD_COMMENT,
-    payload:comment
-})
+
 export const addDishes=(dishes)=>({
     type:ActionTypes.ADD_DISHES,
     payload:dishes
@@ -23,9 +19,13 @@ export const dishesFailed=(errMsg)=>({
     type:ActionTypes.DISHES_FAILED,
     payload:errMsg
 })
+export const refreshDish=(dish)=>({
+    type:ActionTypes.REFRESH_DISH,
+    payload:dish
+})
 
 //This is a redux thunk so it will return a function as action
-//This action will call dish loading action and after 2 second will load add dishes
+//This action will call dish loading action and after fetching will load dishes from server
 export const fetchDishes=()=>(dispatch)=>{
     dispatch(dishesLoading(true))
     // console.log('Url:'+BaseUrl)
@@ -52,6 +52,12 @@ export const fetchDishes=()=>(dispatch)=>{
     })
     .catch(error =>  { console.log('fetching dishes', error.message); });
 }
+
+//addComments is a action.
+export const addComments=(comment)=>({
+    type:ActionTypes.ADD_COMMENT,
+    payload:comment
+})
 export const fetchComments = (dishId) => (dispatch) => { 
     // alert(dishId)   
     fetch(BaseUrl+'dishes/'+dishId+'/comments')
@@ -111,14 +117,70 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
     .then(response => dispatch(refreshDish(response)))
     .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
 };
-export const refreshDish=(dish)=>({
-    type:ActionTypes.REFRESH_DISH,
-    payload:dish
-})
+
 export const commentsFailed = (errmess) => ({
     type: ActionTypes.COMMENTS_FAILED,
     payload: errmess
 });
+export const commentDelete=(commentId,dishId)=>(dispatch)=>{
+    fetch(BaseUrl+'dishes/'+dishId+'/comments/'+commentId,{
+        method:'delete',
+        credentials:'include',
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then(response=>
+        {
+            if(response.ok)
+                return response
+            else{
+                var err=new Error('Error '+response.status+': '+response.statusText)
+                err.response=response
+                throw err
+            }
+        },
+        error=>{
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+    .then(response => response.json())
+    .then(dish => dispatch(refreshDish(dish)))
+    .catch(error =>  { console.log('Delete Comment', error.message);  });
+}
+
+export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
+    fetch(BaseUrl+'dishes/'+dishId+'/comments/'+commentId,{
+        method:'put',
+        credentials:'include',
+        body:JSON.stringify(comment),
+        headers:{
+            'content-type':'application/json'
+        }
+    })
+    .then(response=>
+        {
+            if(response.ok)
+                return response
+            else{
+                var err=new Error('Error '+response.status+': '+response.statusText)
+                err.response=response
+                throw err
+            }
+        },
+        error=>{
+            var errmess = new Error(error.message);
+            throw errmess;
+        })
+    .then(response => response.json())
+    .then(dish => {
+        alert('Comment Changed');
+        dispatch(refreshDish(dish))
+    })
+    .catch(error =>  { console.log('Delete Comment', error.message);  });
+}
+
+
 
 export const fetchPromos = () => (dispatch) => {
     
@@ -253,6 +315,7 @@ export const login=(username,password)=>(dispatch)=>{
         alert(response.status)  
         cookie.remove('login',{path:'/'})
         cookie.save('login',true,{path:'/'})
+        cookie.save('user',username,{path:'/'})
         if(response.success){
             // alert('sdg')
             dispatch(loginsuccess)
@@ -263,12 +326,10 @@ export const login=(username,password)=>(dispatch)=>{
     .catch(error =>  { console.log('Login error', error.message); alert('Login Failed\nError: '+(error.message.statusText)); });
 }
 export const loginsuccess={
-    type:ActionTypes.LOGIN,
-    payload:{login:true}
+    type:ActionTypes.LOGIN
 }
 export const loginfailed={
-    type:ActionTypes.LOGIN,
-    payload:{login:false}
+    type:ActionTypes.LOGIN
 }
 export const logout=()=>(dispatch)=>{
     fetch(BaseUrl+'users/logout',{
@@ -292,6 +353,7 @@ export const logout=()=>(dispatch)=>{
     .then((response)=>{
         cookie.remove('login',{path:'/'})
         cookie.save('login',false,{path:'/'})
+        cookie.remove('user',{path:'/'})
         alert(response.status)
         dispatch(loginfailed)
     })
