@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/bluegrassrestaurant/static/css/main.1ff0bbca.chunk.css",
-    "main.js": "/bluegrassrestaurant/static/js/main.8749d67c.chunk.js",
-    "main.js.map": "/bluegrassrestaurant/static/js/main.8749d67c.chunk.js.map",
-    "runtime-main.js": "/bluegrassrestaurant/static/js/runtime-main.a70fd098.js",
-    "runtime-main.js.map": "/bluegrassrestaurant/static/js/runtime-main.a70fd098.js.map",
-    "static/css/2.83a012ef.chunk.css": "/bluegrassrestaurant/static/css/2.83a012ef.chunk.css",
-    "static/js/2.18fbf772.chunk.js": "/bluegrassrestaurant/static/js/2.18fbf772.chunk.js",
-    "static/js/2.18fbf772.chunk.js.map": "/bluegrassrestaurant/static/js/2.18fbf772.chunk.js.map",
-    "index.html": "/bluegrassrestaurant/index.html",
-    "precache-manifest.e23b97c43b80cfea0b957461579da30a.js": "/bluegrassrestaurant/precache-manifest.e23b97c43b80cfea0b957461579da30a.js",
-    "service-worker.js": "/bluegrassrestaurant/service-worker.js",
-    "static/css/2.83a012ef.chunk.css.map": "/bluegrassrestaurant/static/css/2.83a012ef.chunk.css.map",
-    "static/css/main.1ff0bbca.chunk.css.map": "/bluegrassrestaurant/static/css/main.1ff0bbca.chunk.css.map",
-    "static/js/2.18fbf772.chunk.js.LICENSE.txt": "/bluegrassrestaurant/static/js/2.18fbf772.chunk.js.LICENSE.txt",
-    "static/media/font-awesome.min.css": "/bluegrassrestaurant/static/media/fontawesome-webfont.fee66e71.woff"
+    "main.css": "/bluegrassrestaurant/home/static/css/main.1ff0bbca.chunk.css",
+    "main.js": "/bluegrassrestaurant/home/static/js/main.a2cde363.chunk.js",
+    "main.js.map": "/bluegrassrestaurant/home/static/js/main.a2cde363.chunk.js.map",
+    "runtime-main.js": "/bluegrassrestaurant/home/static/js/runtime-main.d545f3f5.js",
+    "runtime-main.js.map": "/bluegrassrestaurant/home/static/js/runtime-main.d545f3f5.js.map",
+    "static/css/2.0695fafd.chunk.css": "/bluegrassrestaurant/home/static/css/2.0695fafd.chunk.css",
+    "static/js/2.e95449c9.chunk.js": "/bluegrassrestaurant/home/static/js/2.e95449c9.chunk.js",
+    "static/js/2.e95449c9.chunk.js.map": "/bluegrassrestaurant/home/static/js/2.e95449c9.chunk.js.map",
+    "index.html": "/bluegrassrestaurant/home/index.html",
+    "precache-manifest.1fda4e4615c3bf7794c5b0696ffc2f23.js": "/bluegrassrestaurant/home/precache-manifest.1fda4e4615c3bf7794c5b0696ffc2f23.js",
+    "service-worker.js": "/bluegrassrestaurant/home/service-worker.js",
+    "static/css/2.0695fafd.chunk.css.map": "/bluegrassrestaurant/home/static/css/2.0695fafd.chunk.css.map",
+    "static/css/main.1ff0bbca.chunk.css.map": "/bluegrassrestaurant/home/static/css/main.1ff0bbca.chunk.css.map",
+    "static/js/2.e95449c9.chunk.js.LICENSE.txt": "/bluegrassrestaurant/home/static/js/2.e95449c9.chunk.js.LICENSE.txt",
+    "static/media/font-awesome.min.css": "/bluegrassrestaurant/home/static/media/fontawesome-webfont.fee66e71.woff"
   },
   "entrypoints": [
-    "static/js/runtime-main.a70fd098.js",
-    "static/css/2.83a012ef.chunk.css",
-    "static/js/2.18fbf772.chunk.js",
+    "static/js/runtime-main.d545f3f5.js",
+    "static/css/2.0695fafd.chunk.css",
+    "static/js/2.e95449c9.chunk.js",
     "static/css/main.1ff0bbca.chunk.css",
-    "static/js/main.8749d67c.chunk.js"
+    "static/js/main.a2cde363.chunk.js"
   ]
 }
