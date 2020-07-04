@@ -89,12 +89,12 @@ class Main extends Component {
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
             <Switch location={this.props.location}>
-                  <Route path='/bluegrassrestaurant/home' component={HomePage} />
+                  <Route path='/home' component={HomePage} />
                   <Route exact path='/bluegrassrestaurant/menu' component={() => <Menu dishes={this.props.dishes} />} />
                   <Route path='/bluegrassrestaurant/menu/:dishId' component={DishWithId}/>
                   <Route exact path='/bluegrassrestaurant/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postfeedback={this.props.postfeedback}/>}/>
                   <Route exact path='/bluegrassrestaurant/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
-                  <Redirect to="/bluegrassrestaurant/home"/>
+                  <Redirect to="/home"/>
               </Switch>
             </CSSTransition>
           </TransitionGroup>
