@@ -116,7 +116,7 @@ const LoginButton=(props)=>{
     // console.log(props.logout.toString())
     
     // var cookie_login=cookie.load('login')
-    if (props.login=='false')
+    if (props.login==='false')
     // if(cookie_login===undefined || cookie_login==='false')
     {
         return(
