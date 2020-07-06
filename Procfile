@@ -1,1 +1,1 @@
-web:serve -s build -l $PORT
+web:PORT=$PORT serve -s build
