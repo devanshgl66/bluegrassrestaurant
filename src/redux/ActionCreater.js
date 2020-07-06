@@ -92,7 +92,7 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         comment: comment
     };
     newComment.date = new Date().toISOString();
-    
+    // alert(JSON.stringify(newComment))
     return fetch(BaseUrl + 'dishes/'+dishId+'/comments', {
         method: 'POST',
         body: JSON.stringify(newComment),
@@ -145,7 +145,7 @@ export const commentDelete=(commentId,dishId)=>(dispatch)=>{
             throw errmess;
         })
     .then(response => response.json())
-    .then(dish => dispatch(refreshDish(dish)))
+    .then(dish => {dispatch(refreshDish(dish));alert('Comment Deleted')})
     .catch(error =>  { console.log('Delete Comment', error.message);  });
 }
 

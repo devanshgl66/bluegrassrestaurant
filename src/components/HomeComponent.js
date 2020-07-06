@@ -15,7 +15,7 @@ function RenderCard(props) {
         return(
             <h4>{errMsg}</h4>
         )
-    else {
+    else{
         return(
             <FadeTransform in  
             transformProps={{
@@ -31,7 +31,11 @@ function RenderCard(props) {
                 </CardBody>
             </Card>
             </FadeTransform>
-        );}
+        );
+    }
+    // else{
+    //     return(<div></div>)
+    // }
 
 }
 

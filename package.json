@@ -1,5 +1,5 @@
 {
-  "homepage":"https://restaurant-blue-grass.herokuapp.com/",
+  "homepage": "https://restaurant-blue-grass.herokuapp.com/",
   "name": "project",
   "version": "0.1.0",
   "private": true,
@@ -27,7 +27,8 @@
     "reactstrap": "^8.4.1",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "serve": "^11.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
