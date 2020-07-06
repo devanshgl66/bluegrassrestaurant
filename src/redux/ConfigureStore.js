@@ -22,6 +22,8 @@ export const ConfigStore=()=>{
         ...createForms({
             feedback:feedback
         })
-    }),applyMiddleware(thunk,logger))
+    }),applyMiddleware(thunk,
+        // logger //used to log prev state action next state.
+        ))
     return store;
 }
