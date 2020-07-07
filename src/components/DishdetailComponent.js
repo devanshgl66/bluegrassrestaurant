@@ -113,9 +113,9 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
         const comments=cmts.map((comment)=>{
             var Rating=[]
             for (var i=0;i<comment.rating;i++)
-                Rating.push(<i class="fa fa-star" style={{'color':'yellow'}}/>)
+                Rating.push(<i className="fa fa-star" style={{'color':'yellow'}}/>)
             for (i=comment.rating;i<5;i++)
-                Rating.push(<i class="fa fa-star"/>)
+                Rating.push(<i className="fa fa-star"/>)
             const CmtsOptions=()=>{
                 const [editCmts,seteditCmts]=useState(false)
                 if(username && username===comment.author.username)

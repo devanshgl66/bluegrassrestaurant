@@ -42,7 +42,7 @@ const LoginForm=(props)=>{
     )
 }
 const RegisterForm=(props)=>{
-    console.log(props.available)
+    // console.log(props.available)
     const [password, setpassword] = useState('')
     return(
         <Modal isOpen={props.modal['register']} toggle={()=>props.toggleModal('register')}>
@@ -116,7 +116,7 @@ const LoginButton=(props)=>{
     // console.log(props.logout.toString())
     
     // var cookie_login=cookie.load('login')
-    if (props.login==='false')
+    if (props.login===false)
     // if(cookie_login===undefined || cookie_login==='false')
     {
         return(
@@ -196,7 +196,7 @@ class Header extends Component {
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav} />
                         <NavbarBrand className="mr-auto" href="/bluegrassrestaurant/home">
-                        <img src='assets/images/logo.png' height="30" width="41" alt='Restaurant Blue Grass' /></NavbarBrand>
+                        <img src='assets/images/logo.jpeg' height="30" width="41" alt='Restaurant Blue Grass' /></NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                             <NavItem>

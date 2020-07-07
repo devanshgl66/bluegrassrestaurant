@@ -30,10 +30,12 @@ function Menu(props){
             <Loading/>
         // <h1>{props.isLoading}</h1>
         )
-    else if(props.dishes.errMsg)
+    else if(props.dishes.errMsg){
+            // console.log(props.dishes.errMsg.toString())
         return(
-            <h4>{props.dishes.errMsg}</h4>
-        )
+            <h4>{props.dishes.errMsg.toString()}</h4>
+            // <h4>Error</h4>
+        )}
     else
         return(
             <div className='container'>

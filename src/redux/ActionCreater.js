@@ -30,27 +30,24 @@ export const fetchDishes=()=>(dispatch)=>{
     dispatch(dishesLoading(true))
     // console.log('Url:'+BaseUrl)
     fetch(BaseUrl+'dishes')
+    .then(response=>response.json())
     .then((response)=>{
-        if(response.ok)
-            return response
-        else {
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.response = response;
-            throw error;
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
+            throw err
         }
-    },
-    error => {
+        else
+            return response
+    },error=>{
         var errmess = new Error(error.message);
         throw errmess;
     })
     .then((response)=>{
-        return response.json()
-    })
-    .then((response)=>{
-        // alert(JSON.stringify(response))
         dispatch(addDishes(response))
     })
-    .catch(error =>  { console.log('fetching dishes', error.message); });
+    .catch(error =>  { console.log('fetching dishes', error);dispatch(dishesFailed(error));alert("Error"+error) });
 }
 
 //addComments is a action.
@@ -61,23 +58,24 @@ export const addComments=(comment)=>({
 export const fetchComments = (dishId) => (dispatch) => { 
     // alert(dishId)   
     fetch(BaseUrl+'dishes/'+dishId+'/comments')
+    .then(response=>response.json())
     .then((response)=>{
         // alert(JSON.stringify(response))
-        if(response.ok)
-            return response
-        else{
-            var err=new Error('Error '+response.status+': '+response.statusText)
-            err.response=response
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
             throw err
         }
-    }, error=>{
+        else
+            return response
+    },error=>{
         var errmess = new Error(error.message);
         throw errmess;
-    }
-    )
-    .then(response => response.json())
-    .then(comments => dispatch(addComment(comments)))
-    .catch(error =>  { console.log('fetch comments', error.message);  });
+    })
+    .then(comments => {
+        dispatch(addComment(comments))
+    })
+    .catch(error =>  { console.log('fetch comments',  error);alert('Error'+error)  });
 };
 export const addComment = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
@@ -101,21 +99,22 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         },
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
+    .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
+            throw err
         }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(response => dispatch(refreshDish(response)))
-    .catch(error =>  { console.log('post comments', error.message); alert('Your comment could not be posted\nError: '+error.message); });
+    .catch(error =>  { console.log('Post comments', error); alert('Your comment could not be posted\nError: '+error); });
 };
 
 export const commentsFailed = (errmess) => ({
@@ -130,23 +129,23 @@ export const commentDelete=(commentId,dishId)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then(response=>
-        {
-            if(response.ok)
-                return response
-            else{
-                var err=new Error('Error '+response.status+': '+response.statusText)
-                err.response=response
-                throw err
-            }
-        },
-        error=>{
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-    .then(response => response.json())
+    .then(response=>response.json())
+    .then((response)=>{
+        // response=response.json()
+        // alert(JSON.stringify(response))
+        // console.log(response)
+        if(response.success===false){
+            var err=new Error(response.status)
+            throw err
+        }
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(dish => {dispatch(refreshDish(dish));alert('Comment Deleted')})
-    .catch(error =>  { console.log('Delete Comment', error.message);  });
+    .catch(error =>  { console.log('Delete Comment',  error);alert(error)  });
 }
 
 export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
@@ -158,26 +157,25 @@ export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then(response=>
-        {
-            if(response.ok)
-                return response
-            else{
-                var err=new Error('Error '+response.status+': '+response.statusText)
-                err.response=response
-                throw err
-            }
-        },
-        error=>{
-            var errmess = new Error(error.message);
-            throw errmess;
-        })
-    .then(response => response.json())
+    .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error(response.status)
+            throw err
+        }
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(dish => {
         alert('Comment Changed');
         dispatch(refreshDish(dish))
     })
-    .catch(error =>  { console.log('Edit Comment Error', error.message);  });
+    .catch(error =>  { console.log('Edit Comment Error', error);alert(error)  });
 }
 
 
@@ -187,23 +185,22 @@ export const fetchPromos = () => (dispatch) => {
     dispatch(promosLoading());
 
     return fetch(BaseUrl + 'promotions')
+    .then(response=>response.json())
     .then((response)=>{
-        if(response.ok)
-            return response
-        else{
-            var err=new Error('Error '+response.status+': '+response.statusText)
-            err.response=response
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
             throw err
         }
-    },
-    error=>{
+        else
+            return response
+    },error=>{
         var errmess = new Error(error.message);
         throw errmess;
-    }
-    )
-    .then(response => response.json())
+    })
     .then(promos => dispatch(addPromos(promos)))
-    .catch(error =>  { console.log('fetch promos', error.message);  });
+    .catch(error =>  { console.log('fetch promos', error);alert(error)  });
 }
 
 export const promosLoading = () => ({
@@ -237,23 +234,24 @@ export const fetchleader=()=>(dispatch)=>{
     dispatch(leaderLoading())
 
     fetch(BaseUrl+'leaders')
+    .then(response=>response.json())
     .then((response)=>{
-        if (response.ok)
-            return response
-        else{
-            var err=new Error('Error '+response.status+':'+response.statusText)
-            err.response=response.statusText
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
             throw err
         }
-    },
-    err=>{
-        throw err
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
     })
-    .then((response)=>response.json())
     .then((leader)=>{
         dispatch(addLeader(leader))
     })
-    .catch(error =>  { console.log('post comments', error.message);  });
+    .catch(error =>  { console.log('post comments', error);alert('Error'+error)  });
 }
 
 export const postFeedback=(values)=>(dispatch)=>{
@@ -265,26 +263,29 @@ export const postFeedback=(values)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
+    .then(response=>response.json())
     .then((response)=>{
-        if (response.ok)
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error(response.status)
+            throw err
+        }
+        else
             return response
-        else{var error = new Error('Error ' + response.status + ': ' + response.statusText);
-        error.response = response;
-        throw error;
-      }
-    },
-    error => {
-          throw error;
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
     })
-    .then((response)=>response.json())
     .then((response)=>alert('Your feedback is send.'))
     .catch(error=>
         {
-             console.log('post feedback', error.message); 
-             alert('Your feedback could not be posted\nError: '+error.message);
+             console.log('post feedback', error); 
+             alert('Your feedback could not be posted\n '+error);
          })
 }
 export const login=(username,password)=>(dispatch)=>{
+    
     var values={username:username,password:password}
     fetch(BaseUrl+'users/login',{
         method:'POST',
@@ -294,36 +295,32 @@ export const login=(username,password)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then(response => {
-        console.log(response)
-        if (response.ok) {
-          return response;
-        } else {
-            if(response.status===401)
-                response.statusText='Invalid username or password'
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.message = response;
-          throw error;
+    .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error(response.status)
+            throw err
         }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(response =>  {
-        // console.log(response.success)
         alert(response.status)  
         cookie.remove('login',{path:'/'})
         cookie.save('login',true,{path:'/'})
         cookie.save('user',username,{path:'/'})
-        if(response.success){
-            // alert('sdg')
+        if(response.success)
             dispatch(loginsuccess)
-        }
         else
             dispatch(loginfailed)
     })
-    .catch(error =>  { console.log('Login error', error.message); alert('Login Failed\nError: '+(error.message.statusText)); });
+    .catch(error =>  { 
+    console.log('Login error', error); alert('Login Failed\n'+error); });
 }
 export const loginsuccess={
     type:ActionTypes.LOGIN
@@ -339,17 +336,20 @@ export const logout=()=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then((response)=>{
-        if(response.ok)
-            return response
-        else{
-            alert(JSON.stringify(response))
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.message = response;
-            throw error;
-        }
-    })
     .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
+            throw err
+        }
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then((response)=>{
         cookie.remove('login',{path:'/'})
         cookie.save('login',false,{path:'/'})
@@ -357,7 +357,7 @@ export const logout=()=>(dispatch)=>{
         alert(response.status)
         dispatch(loginfailed)
     })
-    .catch(error =>  { console.log('Logout error', error.message); alert('Logout Failed\nError: '+(error.message.statusText)); });
+    .catch(error =>  { console.log('Logout error', error); alert('Logout Failed\nError: '+(error)); });
 }
 export const register=(user)=>(dispatch)=>{
     fetch(BaseUrl+'users/signup',{
@@ -368,20 +368,24 @@ export const register=(user)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then((response)=>{
-        if(response.ok)
-            return response
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.message = response;
-            throw error;
-        }
-    })
     .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
+            throw err
+        }
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(response=>{
         alert(response.status)
     })
-    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message.statusText)); });
+    .catch(error =>  { console.log('Registration error', error); alert('Registration Failed\nError: '+(error)); });
 }
 export const availableUName=(username)=>(dispatch)=>{
     fetch(BaseUrl+'users/availableUName',{
@@ -392,22 +396,25 @@ export const availableUName=(username)=>(dispatch)=>{
         },
         credentials:'include'
     })
-    .then(response=>{
-        // console.log(response)
-        if(response.ok)
-            return response
-        else{
-            var error = new Error('Error ' + response.status + ': ' + response.statusText);
-            error.message = response;
-            throw error;
-        }
-    })
     .then(response=>response.json())
+    .then((response)=>{
+        // alert(JSON.stringify(response))
+        // response=response.json()
+        if(response.success===false){
+            var err=new Error('Error :'+response.status)
+            throw err
+        }
+        else
+            return response
+    },error=>{
+        var errmess = new Error(error.message);
+        throw errmess;
+    })
     .then(response=>{
         console.log(response)
         dispatch(usernameAvailable(response.available))
     } )
-    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message.statusText)); });
+    .catch(error =>  { console.log('Registration error', error);alert('Error'+error)});
 }
 export const usernameAvailable=(ava)=>({
     type:ActionTypes.AVAILABLEUSERNAME,
