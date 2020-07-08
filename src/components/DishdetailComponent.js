@@ -120,7 +120,7 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
         const comments=cmts.map((comment)=>{
             cmtNo++
             if(cmtNo<(page-1)*cmtPerPage || cmtNo>=page*cmtPerPage)
-                return (null)
+                return (<Fragment/>)
             var Rating=[]
             for (var i=0;i<comment.rating;i++)
                 Rating.push(<i className="fa fa-star" style={{'color':'yellow'}}/>)
