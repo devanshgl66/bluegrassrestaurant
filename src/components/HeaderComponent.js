@@ -3,7 +3,6 @@ import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, 
 import { NavLink } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
 
-const available=(x)=>(val)=>!x
 const LoginForm=(props)=>{
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
@@ -40,28 +39,43 @@ const LoginForm=(props)=>{
     )
 }
 const RegisterForm=(props)=>{
-    console.log(props.loginState)
+    // console.log(props.loginState)
     const [password, setpassword] = useState('')
+    const [isloading, setisloading] = useState(false)
+    
     return(
         <Modal isOpen={props.modal['register']} toggle={()=>props.toggleModal('register')}>
             <ModalHeader>Register</ModalHeader>
             <ModalBody>
-                <LocalForm onSubmit={(values)=>handleRegister({...values,password},props.register)}> 
+                <LocalForm onSubmit={(values)=>!isloading&&handleRegister({...values,password},props.register)}> 
                     <Row className='form-group'>
                         <Col md={10}>
                             <Label htmlFor='Username'>Username</Label>
                             <Control.text model='.username' id='username' name='username'
                                 placeholder='Username' className='form-control'
-                                validators={{available:available(props.loginState.available)}}
-                                onChange={(e)=>{props.availableUName(e.target.value);console.log(e.target.value)}}
+                                onChange={(e)=>{props.availableUName(e.target.value)}}
                                 required
+                                asyncValidators={{
+                                    availabl:(val,done)=>{
+                                        setisloading(true)
+                                        props.availableUName(val)
+                                        .then(response=>{
+                                            setisloading(false)
+                                            if(!response.available)
+                                                done(false)
+                                            else
+                                                done(true)
+                                        })
+                                    }
+                                }}
                             />
+                            {isloading&&<i class="fa fa-spinner"/>}
                             <Errors
                                 className='text-danger'
                                 model='.username'
                                 show='touched'
                                 messages={{
-                                    available:props.loginState.loading?<i class="fa fa-spinner"/> :  'Username already taken'
+                                    availabl:isloading?'':'Username already taken'
                                 }}/>
                         </Col>
                     </Row>
@@ -100,6 +114,9 @@ const RegisterForm=(props)=>{
         </Modal>
     )
 }
+// const RegisterForm2=(props)=>{
+
+// }
 const handleRegister=(values,register)=>{
     register(values)
 }
@@ -126,7 +143,7 @@ const LoginButton=(props)=>{
         )
     }
     else{
-        console.log(props.logout)
+        // console.log(props.logout)
         return(
             <NavItem>
                 <Button color='primary' onClick={()=>props.handleLogout(props.logout)}>
@@ -166,12 +183,12 @@ class Header extends Component {
           })
       }
       handleLogin=(values,login)=>{
-          console.log(values)
+        //   console.log(values)
         login(values.username,values.password)
         this.toggleModal('login')
       }
       handleLogout=(logout)=>{
-        console.log(logout)
+        // console.log(logout)
         logout()
         // alert('Bye')
     }

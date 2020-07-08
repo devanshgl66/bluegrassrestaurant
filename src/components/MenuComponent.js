@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import {Card,CardTitle,CardImg,CardImgOverlay,Breadcrumb,BreadcrumbItem} from 'reactstrap';
+import {Card,CardTitle,CardImg,CardImgOverlay,Breadcrumb,BreadcrumbItem, Row,Col} from 'reactstrap';
 import {Link} from 'react-router-dom'
 import { Loading } from './Loading';
 import {BaseUrl} from '../shared/baseUrl'
+import {Pagination} from '@material-ui/lab'
 function RenderMenuItem({dish}){
     // alert(dish.image)
     return (
@@ -16,14 +17,32 @@ function RenderMenuItem({dish}){
         </Card>
     )
 }
+
 function Menu(props){
-    const [min,setmin]=useState(0)
-    const [max,setmax]=useState(2)
-    var counter=0;
+    const [page,setpage]=useState(1)
+    const dishPerPage=4
+    const totDish=props.dishes.dishes.length
+    const totpage=Math.ceil(totDish/dishPerPage)
+    var dishNo=-1
+    const Paginate=()=>{
+        if (totpage>1)
+            return(
+                <Row>
+                    <Col>
+                        <Pagination 
+                            color='secondary' shape='rounded' count={totpage} 
+                            showFirstButton showLastButton
+                            onChange={(event,page)=>setpage(page)} size='large'/>
+                    </Col>
+                </Row>
+            )
+        else
+            return(null)
+    }
     const dishes=props.dishes.dishes.map((dish)=>{
-        if(counter<min && counter>max)
-            return(<div></div>)
-        counter++;
+        dishNo++
+            if(dishNo<(page-1)*dishPerPage || dishNo>=page*dishPerPage)
+                return (null)
         return(
             //mt-5 =>top margin:5 reactstrap
             <div key={dish.id} className="col-12 col-md-5 m-1">
@@ -58,6 +77,8 @@ function Menu(props){
                 <div className='row'>
                     {dishes}
                 </div>
+                <Paginate/>
+                
             </div>
         );
 }

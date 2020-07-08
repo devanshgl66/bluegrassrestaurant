@@ -12,10 +12,10 @@ class Contact extends Component {
     constructor(props){
         super(props)
         this.handleSubmit=this.handleSubmit.bind(this)
-        console.log(props)
+        // console.log(props)
     }
     handleSubmit(values,postfeedback){
-        console.log(JSON.stringify(values))
+        // console.log(JSON.stringify(values))
         // alert(JSON.stringify(values))
         // console.log(postfeedback)
         postfeedback(values)

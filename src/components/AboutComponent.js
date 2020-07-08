@@ -7,7 +7,7 @@ import {Fade,Stagger} from 'react-animation-components'
 function RenderLeader({leader}){
     return (
         <Media>
-            <Media object src={BaseUrl+ leader.image} alt={leader.name}/>
+            <Media object src={BaseUrl+ leader.image} alt={leader.name} style={{'height':'100px','width':'100px'}}/>
             <Media body className='col-12'>
                 <Media heading right>{leader.name}</Media>
                 <p>{leader.designation}</p>

@@ -35,7 +35,7 @@ export const fetchDishes=()=>(dispatch)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -63,7 +63,7 @@ export const fetchComments = (dishId) => (dispatch) => {
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -104,7 +104,7 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -190,7 +190,7 @@ export const fetchPromos = () => (dispatch) => {
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -239,7 +239,7 @@ export const fetchleader=()=>(dispatch)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -341,7 +341,7 @@ export const logout=()=>(dispatch)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -373,7 +373,7 @@ export const register=(user)=>(dispatch)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -389,7 +389,7 @@ export const register=(user)=>(dispatch)=>{
 }
 export const availableUName=(username)=>(dispatch)=>{
     dispatch(usernameAvailable({loading:true,available:false}))
-    fetch(BaseUrl+'users/availableUName',{
+    return fetch(BaseUrl+'users/availableUName',{
         method:'post',
         body:JSON.stringify({username:username}),
         headers:{
@@ -402,7 +402,7 @@ export const availableUName=(username)=>(dispatch)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
         if(response.success===false){
-            var err=new Error('Error :'+response.status)
+            var err=new Error(response.status)
             throw err
         }
         else
@@ -412,8 +412,9 @@ export const availableUName=(username)=>(dispatch)=>{
         throw errmess;
     })
     .then(response=>{
-        console.log(response)
-        dispatch(usernameAvailable({loading:false,available:response.available}))
+        // console.log(response)
+        // dispatch(usernameAvailable({loading:false,available:response.available}))
+        return response
     })
     .catch(error =>  { console.log('Registration error', error)});
 }

@@ -13,8 +13,8 @@ const required=(val)=>val && val.length
 // const maxLength=(len)=>(val)=>!val || val.length<=len
 
 const handleCmtForm=(values,postComments,dishId)=>{
-    console.log(values)
-    console.log(postComments)
+    // console.log(values)
+    // console.log(postComments)
     postComments(dishId,values.rating,values.author,values.comments)
 }
 function CommentForm({postComment,dishId}){
@@ -114,13 +114,13 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
         const cmtPerPage=5
         const totCmts=cmts.length
         const totpage=Math.ceil(totCmts/cmtPerPage)
-        console.log(cmts)
-        console.log(page*cmtPerPage)
+        // console.log(cmts)
+        // console.log(page*cmtPerPage)
         var cmtNo=-1
         const comments=cmts.map((comment)=>{
             cmtNo++
             if(cmtNo<(page-1)*cmtPerPage || cmtNo>=page*cmtPerPage)
-                return (<div></div>)
+                return (null)
             var Rating=[]
             for (var i=0;i<comment.rating;i++)
                 Rating.push(<i className="fa fa-star" style={{'color':'yellow'}}/>)
@@ -200,7 +200,7 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
             )
         })
         const Paginate=()=>{
-            if (page>1)
+            if (totpage>1)
                 return(
                     <Row>
                         <Col>
@@ -212,7 +212,7 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
                     </Row>
                 )
             else
-                    return(<Fragment/>)
+                    return(null)
         }
         return(
             <div>
@@ -258,7 +258,7 @@ class Dish extends Component{
         else if(dish){
             // console.log(this.props.comment)
             // if(!this.props.comment)
-            console.log(this.props.dish.comments)
+            // console.log(this.props.dish.comments)
             return(
                 <div className='container'>
                     <div className='row'>
