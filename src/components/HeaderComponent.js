@@ -3,8 +3,6 @@ import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, 
 import { NavLink } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
 
-
-const required=(val)=> val && val.length
 const available=(x)=>(val)=>!x
 const LoginForm=(props)=>{
     const [username, setusername] = useState('')
@@ -42,7 +40,7 @@ const LoginForm=(props)=>{
     )
 }
 const RegisterForm=(props)=>{
-    // console.log(props.available)
+    console.log(props.loginState)
     const [password, setpassword] = useState('')
     return(
         <Modal isOpen={props.modal['register']} toggle={()=>props.toggleModal('register')}>
@@ -54,7 +52,7 @@ const RegisterForm=(props)=>{
                             <Label htmlFor='Username'>Username</Label>
                             <Control.text model='.username' id='username' name='username'
                                 placeholder='Username' className='form-control'
-                                validators={{required,available:available(props.available)}}
+                                validators={{available:available(props.loginState.available)}}
                                 onChange={(e)=>{props.availableUName(e.target.value);console.log(e.target.value)}}
                                 required
                             />
@@ -63,8 +61,7 @@ const RegisterForm=(props)=>{
                                 model='.username'
                                 show='touched'
                                 messages={{
-                                    required:'Required',
-                                    available:'Username already taken'
+                                    available:props.loginState.loading?<i class="fa fa-spinner"/> :  'Username already taken'
                                 }}/>
                         </Col>
                     </Row>
@@ -73,14 +70,8 @@ const RegisterForm=(props)=>{
                                 <Label htmlFor='firstname'>Firstname</Label>
                                 <Control.text model='.firstname' id='firstname' name='firstname'
                                     placeholder='firstname' className='form-control'
-                                    validators={{required}}/>
-                                <Errors model='.firstname'
-                                    show='touched'
-                                    className='text-danger'
-                                    messages={{
-                                        required:'Required',
-                                    }}
-                                />
+                                    required/>
+                                
                         </Col>
                     </Row>
                     <Row className='form-group'>
@@ -195,21 +186,21 @@ class Header extends Component {
                 <Navbar dark expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav} />
-                        <NavbarBrand className="mr-auto" href="/bluegrassrestaurant/home">
+                        <NavbarBrand className="mr-auto" href="/home">
                         <img src='assets/images/logo.jpeg' height="30" width="41" alt='Restaurant Blue Grass' /></NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                             <NavItem>
-                                <NavLink className="nav-link"  to='/bluegrassrestaurant/home'><span className="fa fa-home fa-lg"></span> Home</NavLink>
+                                <NavLink className="nav-link"  to='/home'><span className="fa fa-home fa-lg"></span> Home</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to='/bluegrassrestaurant/aboutus'><span className="fa fa-info fa-lg"></span> About Us</NavLink>
+                                <NavLink className="nav-link" to='/aboutus'><span className="fa fa-info fa-lg"></span> About Us</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link"  to='/bluegrassrestaurant/menu'><span className="fa fa-list fa-lg"></span> Menu</NavLink>
+                                <NavLink className="nav-link"  to='/menu'><span className="fa fa-list fa-lg"></span> Menu</NavLink>
                             </NavItem>
                             <NavItem>
-                                <NavLink className="nav-link" to='/bluegrassrestaurant/contactus'><span className="fa fa-address-card fa-lg"></span> Contact Us</NavLink>
+                                <NavLink className="nav-link" to='/contactus'><span className="fa fa-address-card fa-lg"></span> Contact Us</NavLink>
                             </NavItem>
                             </Nav>
                             <Nav className='ml-auto' navbar>
@@ -218,7 +209,7 @@ class Header extends Component {
                         </Collapse>
                     </div>
                     <LoginForm modal={this.state.modal} toggleModal={this.toggleModal} login={this.props.login}  handleLogin={this.handleLogin}/>
-                    <RegisterForm modal={this.state.modal} toggleModal={this.toggleModal} register={this.props.register} availableUName={this.props.availableUName} available={this.props.loginState.available} />
+                    <RegisterForm modal={this.state.modal} toggleModal={this.toggleModal} register={this.props.register} availableUName={this.props.availableUName} loginState={this.props.loginState} />
                 </Navbar>
                 <Jumbotron>
                     <div className="container">

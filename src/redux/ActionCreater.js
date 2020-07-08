@@ -388,6 +388,7 @@ export const register=(user)=>(dispatch)=>{
     .catch(error =>  { console.log('Registration error', error); alert('Registration Failed\nError: '+(error)); });
 }
 export const availableUName=(username)=>(dispatch)=>{
+    dispatch(usernameAvailable({loading:true,available:false}))
     fetch(BaseUrl+'users/availableUName',{
         method:'post',
         body:JSON.stringify({username:username}),
@@ -412,9 +413,9 @@ export const availableUName=(username)=>(dispatch)=>{
     })
     .then(response=>{
         console.log(response)
-        dispatch(usernameAvailable(response.available))
-    } )
-    .catch(error =>  { console.log('Registration error', error);alert('Error'+error)});
+        dispatch(usernameAvailable({loading:false,available:response.available}))
+    })
+    .catch(error =>  { console.log('Registration error', error)});
 }
 export const usernameAvailable=(ava)=>({
     type:ActionTypes.AVAILABLEUSERNAME,

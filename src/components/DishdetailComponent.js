@@ -7,9 +7,10 @@ import { Loading } from './Loading';
 import {BaseUrl} from '../shared/baseUrl'
 // import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import {FadeTransform ,Fade,Stagger} from 'react-animation-components'
+import {Pagination} from '@material-ui/lab'
 const required=(val)=>val && val.length
-const minLength=(len)=>(val)=>val && val.length>=len
-const maxLength=(len)=>(val)=>!val || val.length<=len
+// const minLength=(len)=>(val)=>val && val.length>=len
+// const maxLength=(len)=>(val)=>!val || val.length<=len
 
 const handleCmtForm=(values,postComments,dishId)=>{
     console.log(values)
@@ -108,9 +109,18 @@ function CommentForm({postComment,dishId}){
     )
 }
 function RenderComment({cmts,postComments,dishId,username,commentDelete,commentEdit}){
-
-    if(cmts){        
+    const [page,setpage]=useState(1)
+    if(cmts){
+        const cmtPerPage=5
+        const totCmts=cmts.length
+        const totpage=Math.ceil(totCmts/cmtPerPage)
+        console.log(cmts)
+        console.log(page*cmtPerPage)
+        var cmtNo=-1
         const comments=cmts.map((comment)=>{
+            cmtNo++
+            if(cmtNo<(page-1)*cmtPerPage || cmtNo>=page*cmtPerPage)
+                return (<div></div>)
             var Rating=[]
             for (var i=0;i<comment.rating;i++)
                 Rating.push(<i className="fa fa-star" style={{'color':'yellow'}}/>)
@@ -165,7 +175,7 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
                     return (<Fragment></Fragment>)
             }
             return (                
-                <Fade in>
+                <Fade in>                    
                     <Row>
                         <Col md={9}>
                             <li key={comment.id}>
@@ -185,9 +195,25 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
                             <CmtsOptions/>
                         </Col>
                     </Row>
+                    
                 </Fade>
             )
         })
+        const Paginate=()=>{
+            if (page>1)
+                return(
+                    <Row>
+                        <Col>
+                            <Pagination 
+                                color='secondary' shape='rounded' count={totpage} 
+                                showFirstButton showLastButton
+                                onChange={(event,page)=>setpage(page)}/>
+                        </Col>
+                    </Row>
+                )
+            else
+                    return(<Fragment/>)
+        }
         return(
             <div>
                 <Card>
@@ -200,7 +226,9 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
                         </ul>
                     </CardBody>
                     <CommentForm postComment={postComments} dishId={dishId}/>
+                    <Paginate/>
                 </Card>
+                
             </div>
         )
     }

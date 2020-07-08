@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Card,CardTitle,CardImg,CardImgOverlay,Breadcrumb,BreadcrumbItem} from 'reactstrap';
 import {Link} from 'react-router-dom'
 import { Loading } from './Loading';
@@ -7,7 +7,7 @@ function RenderMenuItem({dish}){
     // alert(dish.image)
     return (
         <Card key={dish.id} >
-            <Link to={`/bluegrassrestaurant/menu/${dish.id}`}>
+            <Link to={`/menu/${dish.id}`}>
                 <CardImg width="100%" src={BaseUrl + dish.image} alt={dish.name} />
                 <CardImgOverlay>                            
                     <CardTitle >{dish.name}</CardTitle>                         
@@ -17,7 +17,13 @@ function RenderMenuItem({dish}){
     )
 }
 function Menu(props){
+    const [min,setmin]=useState(0)
+    const [max,setmax]=useState(2)
+    var counter=0;
     const dishes=props.dishes.dishes.map((dish)=>{
+        if(counter<min && counter>max)
+            return(<div></div>)
+        counter++;
         return(
             //mt-5 =>top margin:5 reactstrap
             <div key={dish.id} className="col-12 col-md-5 m-1">
@@ -41,7 +47,7 @@ function Menu(props){
             <div className='container'>
                 <Breadcrumb>
                     <BreadcrumbItem>
-                        <Link to='/bluegrassrestaurant/home'>Home</Link>
+                        <Link to='/home'>Home</Link>
                     </BreadcrumbItem>
                     <BreadcrumbItem active>Menu</BreadcrumbItem>
                 </Breadcrumb>
