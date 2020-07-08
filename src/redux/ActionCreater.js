@@ -312,8 +312,8 @@ export const login=(username,password)=>(dispatch)=>{
     .then(response =>  {
         alert(response.status)  
         cookie.remove('login',{path:'/'})
-        cookie.save('login',true,{path:'/'})
-        cookie.save('user',username,{path:'/'})
+        cookie.save('login',true,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
+        cookie.save('user',username,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
         if(response.success)
             dispatch(loginsuccess)
         else
@@ -352,7 +352,7 @@ export const logout=()=>(dispatch)=>{
     })
     .then((response)=>{
         cookie.remove('login',{path:'/'})
-        cookie.save('login',false,{path:'/'})
+        cookie.save('login',false,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
         cookie.remove('user',{path:'/'})
         alert(response.status)
         dispatch(loginfailed)
