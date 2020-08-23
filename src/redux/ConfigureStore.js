@@ -23,7 +23,8 @@ export const ConfigStore=()=>{
             feedback:feedback
         })
     }),applyMiddleware(thunk,
-        // logger //used to log prev state action next state.
+        logger 
+        //used to log prev state action next state.
         ))
     return store;
 }

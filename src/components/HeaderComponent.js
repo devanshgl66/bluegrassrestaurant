@@ -3,6 +3,7 @@ import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, 
 import { NavLink } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
 
+const length=(len)=>(val)=> !val||val.length>len
 const LoginForm=(props)=>{
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
@@ -40,20 +41,30 @@ const LoginForm=(props)=>{
 }
 const RegisterForm=(props)=>{
     // console.log(props.loginState)
-    const [password, setpassword] = useState('')
+    const [errorMessage, seterrorMessage] = useState('')
     const [isloading, setisloading] = useState(false)
     
     return(
         <Modal isOpen={props.modal['register']} toggle={()=>props.toggleModal('register')}>
             <ModalHeader>Register</ModalHeader>
             <ModalBody>
-                <LocalForm onSubmit={(values)=>!isloading&&handleRegister({...values,password},props.register)}> 
+                <LocalForm
+                onSubmit={(values,e)=>{
+                            console.log(values)
+                            if(values.password!==values.password2)
+                                seterrorMessage('Password do not match')
+                            else{
+                                seterrorMessage('')
+                                !isloading&&handleRegister({...values},props.register)
+                            }
+                            e.preventDefault();
+                        }
+                    }> 
                     <Row className='form-group'>
-                        <Col md={10}>
+                        <Col>
                             <Label htmlFor='Username'>Username</Label>
                             <Control.text model='.username' id='username' name='username'
                                 placeholder='Username' className='form-control'
-                                onChange={(e)=>{props.availableUName(e.target.value)}}
                                 required
                                 asyncValidators={{
                                     availabl:(val,done)=>{
@@ -81,6 +92,16 @@ const RegisterForm=(props)=>{
                     </Row>
                     <Row className='form-group'>
                         <Col>
+                                <Label htmlFor='email'>Email</Label>
+                                <Control.text model='.email' id='email' name='email' type='email'
+                                    placeholder='email' className='form-control'
+                                    required
+                                />
+                                
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
                                 <Label htmlFor='firstname'>Firstname</Label>
                                 <Control.text model='.firstname' id='firstname' name='firstname'
                                     placeholder='firstname' className='form-control'
@@ -99,7 +120,36 @@ const RegisterForm=(props)=>{
                     <Row className='form-group'>
                         <Col>
                             <Label htmlFor='password'>Password</Label>
-                            <Input type='password' name='password' id='password' onChange={(e)=>setpassword(e.target.value)} required/>
+                            <Control.text model='.password' id='password' name='password'
+                                className='form-control' placeholder='password' type='password'
+                                validators={{ minLength: length(2) }} required
+                                onChange={()=>seterrorMessage('')}
+                            />
+                            <Errors
+                                className="errors text-danger"
+                                model=".password"
+                                show="touched"
+                                messages={{
+                                    valueMissing: 'Password is required',
+                                    minLength: 'Must be more than 2 characters'
+                                }}
+                            />
+
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
+                            <Label htmlFor='password'>RetypePassword</Label>
+                            <Control.text model='.password2' id='password' name='password'
+                                className='form-control' placeholder='password' type='password'
+                                required
+                                onChange={()=>seterrorMessage('')}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <span className='errors text-danger'>{errorMessage}</span>
                         </Col>
                     </Row>
                     <Row>
@@ -118,6 +168,8 @@ const RegisterForm=(props)=>{
 
 // }
 const handleRegister=(values,register)=>{
+    console.log(values)
+    alert('hlo')
     register(values)
 }
 const LoginButton=(props)=>{
