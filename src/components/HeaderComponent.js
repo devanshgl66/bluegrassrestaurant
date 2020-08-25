@@ -11,7 +11,7 @@ const LoginForm=(props)=>{
         <Modal isOpen={props.modal['login']} toggle={()=>props.toggleModal('login')}>
                     <ModalHeader>Login</ModalHeader>
                     <ModalBody>
-                        <LocalForm>
+                        <LocalForm onSubmit={()=>props.handleLogin({username:username,password:password},props.login)}>
                             <FormGroup>
                                 <Label htmlFor='username'>User Name:</Label>
                                 <Input type='text' name='username' id='username' onChange={(e)=>setusername(e.target.value)} required/>
@@ -20,18 +20,14 @@ const LoginForm=(props)=>{
                                 <Label htmlFor='password'>Password:</Label>
                                 <Input type='password' name='password' id='password' onChange={(e)=>setpassword(e.target.value)} required/>
                             </FormGroup>
-                            {/* <FormGroup check>
-                                
-                                <Label check>
-                                    <Input type="checkbox" name='remember'
-                                    innerRef={(input)=> {this.remember=input}}/>
-                                    Remember Me
-                                </Label>
-                                
-                            </FormGroup> */}
+                            
+
                             <FormGroup>
-                                <Button type='submit' color='primary' 
-                                onClick={()=>props.handleLogin({username:username,password:password},props.login)}
+                                <Button color='primary'
+                                    onClick={()=>{props.toggleModal('login');props.toggleModal('forgetPassword')}}
+                                >Forget Password</Button>
+                                &nbsp;
+                                <Button type='submit' color='primary'
                                 >Submit</Button>
                             </FormGroup>
                         </LocalForm>
@@ -39,6 +35,108 @@ const LoginForm=(props)=>{
                 </Modal>
     )
 }
+const ForgetPassword=(props)=>{
+    const [email,setemail]=useState('')
+    const handleforgetPassword=()=>{
+        alert('Email sent: '+email);
+    }
+    return (
+        <Modal isOpen={props.modal['forgetPassword']} toggle={()=>props.toggleModal('forgetPassword')}>
+            <ModalHeader>Forget Password</ModalHeader>
+            <ModalBody>
+                <LocalForm onSubmit={(e2,e)=>{props.toggleModal('forgetPassword');props.toggleModal('changePassword');
+                            handleforgetPassword();
+                            e.preventDefault();
+                        }}>
+                    <FormGroup>
+                        <Label htmlFor='email'>Email</Label>
+                        <Input type='email' name='email' id='email' onChange={(e)=>setemail(e.target.value)} required/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color='primary' type='submit'>
+                            Forget Password
+                        </Button>
+                        <div className='text-dark'>
+                            *An email will be sent contaning OTP to change Password
+                        </div>
+                    </FormGroup>
+                </LocalForm>
+            </ModalBody>
+        </Modal>
+    )
+}
+const ChangePassword=(props)=>{
+    const [errorMessage,seterrorMessage]=useState('')
+    const handlechangePassword=(email)=>{
+        alert('Email sent: '+email);
+    }
+    return (
+        <Modal isOpen={props.modal['changePassword']} toggle={()=>props.toggleModal('changePassword')}>
+            <ModalHeader>Forget Password</ModalHeader>
+            <ModalBody>
+                <LocalForm onSubmit={(val,e)=>{
+                                if(val.password!==val.password2){
+                                    seterrorMessage('password do not match')
+                                }
+                                else{
+                                    seterrorMessage('');
+                                    handlechangePassword(val.email);
+                                }
+                                e.preventDefault();
+                            }}>
+                    <Row className='form-group'>
+                        <Col>
+                                <Label htmlFor='email'>Email</Label>
+                                <Control.text model='.email' id='email' name='email' type='email'
+                                    placeholder='email' className='form-control'
+                                    required
+                                />                                
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
+                            <Label htmlFor='password'>Password</Label>
+                            <Control.text model='.password' id='password' name='password'
+                                className='form-control' placeholder='password' type='password'
+                                validators={{ minLength: length(8) }} required
+                                onChange={()=>seterrorMessage('')}
+                            />
+                            <Errors
+                                className="errors text-danger"
+                                model=".password"
+                                show="touched"
+                                messages={{
+                                    valueMissing: 'Password is required',
+                                    minLength: 'Must be more than 8 characters'
+                                }}
+                            />
+
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
+                            <Label htmlFor='password'>RetypePassword</Label>
+                            <Control.text model='.password2' id='password' name='password'
+                                className='form-control' placeholder='password' type='password'
+                                required
+                                onChange={()=>seterrorMessage('')}
+                            />
+                        </Col>
+                    </Row>
+                    <FormGroup>
+                        <div className='error text-danger'>{errorMessage}</div>
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color='primary' type='submit'
+                            
+                        >Change Password</Button>
+                    </FormGroup>
+                </LocalForm>
+            </ModalBody>
+        </Modal>
+    )
+}
+
 const RegisterForm=(props)=>{
     // console.log(props.loginState)
     const [errorMessage, seterrorMessage] = useState('')
@@ -122,7 +220,7 @@ const RegisterForm=(props)=>{
                             <Label htmlFor='password'>Password</Label>
                             <Control.text model='.password' id='password' name='password'
                                 className='form-control' placeholder='password' type='password'
-                                validators={{ minLength: length(2) }} required
+                                validators={{ minLength: length(8) }} required
                                 onChange={()=>seterrorMessage('')}
                             />
                             <Errors
@@ -131,7 +229,7 @@ const RegisterForm=(props)=>{
                                 show="touched"
                                 messages={{
                                     valueMissing: 'Password is required',
-                                    minLength: 'Must be more than 2 characters'
+                                    minLength: 'Must be more than 8 characters'
                                 }}
                             />
 
@@ -164,9 +262,6 @@ const RegisterForm=(props)=>{
         </Modal>
     )
 }
-// const RegisterForm2=(props)=>{
-
-// }
 const handleRegister=(values,register)=>{
     console.log(values)
     alert('hlo')
@@ -214,7 +309,9 @@ class Header extends Component {
             modal:{
                 nav: false,
                 login:false,
-                register:false
+                register:false,
+                forgetPassword:false,
+                changePassword:true
             }
         };
         this.toggleModal=this.toggleModal.bind(this)
@@ -279,6 +376,8 @@ class Header extends Component {
                     </div>
                     <LoginForm modal={this.state.modal} toggleModal={this.toggleModal} login={this.props.login}  handleLogin={this.handleLogin}/>
                     <RegisterForm modal={this.state.modal} toggleModal={this.toggleModal} register={this.props.register} availableUName={this.props.availableUName} loginState={this.props.loginState} />
+                    <ForgetPassword modal={this.state.modal} toggleModal={this.toggleModal}/>
+                    <ChangePassword modal={this.state.modal} toggleModal={this.toggleModal}/>
                 </Navbar>
                 <Jumbotron>
                     <div className="container">
