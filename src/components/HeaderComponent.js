@@ -2,6 +2,7 @@ import React,{Component, Fragment, useState} from 'react'
 import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, Modal, ModalBody, ModalHeader, Button, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
+import { verifyUser } from '../redux/ActionCreater';
 
 const length=(len)=>(val)=> !val||val.length>len
 const LoginForm=(props)=>{
@@ -38,14 +39,23 @@ const LoginForm=(props)=>{
 const ForgetPassword=(props)=>{
     const [email,setemail]=useState('')
     const handleforgetPassword=()=>{
-        alert('Email sent: '+email);
+        props.forgetPassword({email:email})
+        .then((res)=>{
+            if(res.status)
+                alert(res.status)
+            else
+                alert('Some error occured.\nPlease try again later')
+            if(res.success==true){
+                props.toggleModal('changePassword');
+            }
+        })
+        // alert('Email sent: '+email);
     }
     return (
         <Modal isOpen={props.modal['forgetPassword']} toggle={()=>props.toggleModal('forgetPassword')}>
             <ModalHeader>Forget Password</ModalHeader>
             <ModalBody>
-                <LocalForm onSubmit={(e2,e)=>{props.toggleModal('forgetPassword');props.toggleModal('changePassword');
-                            handleforgetPassword();
+                <LocalForm onSubmit={(e2,e)=>{props.toggleModal('forgetPassword');handleforgetPassword();
                             e.preventDefault();
                         }}>
                     <FormGroup>
@@ -68,7 +78,13 @@ const ForgetPassword=(props)=>{
 const ChangePassword=(props)=>{
     const [errorMessage,seterrorMessage]=useState('')
     const handlechangePassword=(email)=>{
-        alert('Email sent: '+email);
+        props.changePassword({email:email})
+        .then((res)=>{
+            if(res.status)
+                alert(res.status)
+            else
+                alert('Some error occured.\nPlease try again later')
+        })
     }
     return (
         <Modal isOpen={props.modal['changePassword']} toggle={()=>props.toggleModal('changePassword')}>
@@ -136,7 +152,84 @@ const ChangePassword=(props)=>{
         </Modal>
     )
 }
-
+const VerifyUser=(props)=>{
+    const handleVerifyUser=(value)=>{
+        console.log(verifyUser.toString())
+        props.verifyUser(value)
+        .then((res)=>{
+            if(res.status){
+                alert(res.status)
+            }
+            else
+                alert(res)
+        })
+        props.toggleModal('verifyUser')
+    }
+    return(
+        <Modal isOpen={props.modal['verifyUser']} toggle={()=>props.toggleModal('verifyUser')}>
+            <ModalHeader>Verify Account</ModalHeader>
+            <ModalBody>
+                <LocalForm onSubmit={(val,e)=>{handleVerifyUser(val);e.preventDefault()}}>
+                    <Row className='form-group'>
+                        <Col>
+                            <Label htmlFor='email'>Email</Label>
+                            <Control.text model='.email' type='email' name='email' id='email' 
+                            className="form-control" required/>
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
+                            <Label htmlFor='otp'>OTP</Label>
+                            <Control.text type='number' model='.otp' name='otp' id='otp' className='form-control'
+                            required/>
+                        </Col>
+                    </Row>
+                    <Row className='form-group'>
+                        <Col>
+                            <Button className='bg-primary' onClick={()=>props.toggleModal('resendOTP')}>Resend OTP</Button>&nbsp;
+                            <Button className='bg-primary' type='submit'>Verify</Button>
+                        </Col>
+                    </Row>
+                </LocalForm>
+            </ModalBody>
+        </Modal>
+    )
+}
+const ResendOTP=(props)=>{
+    const handleresendOTP=(value)=>{
+        props.resendOTP(value)
+        .then((res)=>{
+            if(res.status)
+                alert(res.status)
+            else
+                alert('Some error occured.\nPlease try again later')
+        })
+    }
+    return(
+        <Modal isOpen={props.modal['resendOTP']} toggle={()=>props.toggleModal('resendOTP')}>
+            <ModalHeader>Resend OTP</ModalHeader>
+            <ModalBody>
+                <LocalForm onSubmit={(val,e)=>{props.toggleModal('resendOTP')
+                            handleresendOTP(val);
+                            e.preventDefault();
+                        }}>
+                    <FormGroup>
+                        <Label htmlFor='email'>Email</Label>
+                        <Control.text model='.email' type='email' name='email' id='email' required/>
+                    </FormGroup>
+                    <FormGroup>
+                        <Button color='primary' type='submit'>
+                            Resend OTP
+                        </Button>
+                        <div className='text-dark'>
+                            *An email will be sent contaning OTP to validate account.
+                        </div>
+                    </FormGroup>
+                </LocalForm>
+            </ModalBody>
+        </Modal>
+    )
+}
 const RegisterForm=(props)=>{
     // console.log(props.loginState)
     const [errorMessage, seterrorMessage] = useState('')
@@ -156,6 +249,7 @@ const RegisterForm=(props)=>{
                                 !isloading&&handleRegister({...values},props.register)
                             }
                             e.preventDefault();
+                            props.toggleModal('register')
                         }
                     }> 
                     <Row className='form-group'>
@@ -264,7 +358,6 @@ const RegisterForm=(props)=>{
 }
 const handleRegister=(values,register)=>{
     console.log(values)
-    alert('hlo')
     register(values)
 }
 const LoginButton=(props)=>{
@@ -279,12 +372,17 @@ const LoginButton=(props)=>{
                 <NavItem>
                     <Button color='primary' onClick={()=>props.toggleModal('login')}>
                         <span className="fa fa-sign-in fa-lg"></span>Login
-                    </Button>
+                    </Button>&nbsp;
                 </NavItem>
                 <NavItem>
                     <Button color='primary' onClick={()=>props.toggleModal('register')}>
                         <span className="fa fa-sign-up fa-lg"></span>Register
-                    </Button>
+                    </Button>&nbsp;
+                </NavItem>
+                <NavItem>
+                    <Button color='primary' onClick={()=>props.toggleModal('verifyUser')}>
+                        <span className="fa fa-sign-up fa-lg"></span>Verify Account
+                    </Button>&nbsp;
                 </NavItem>
             </Fragment>
         )
@@ -311,7 +409,9 @@ class Header extends Component {
                 login:false,
                 register:false,
                 forgetPassword:false,
-                changePassword:true
+                changePassword:false,
+                verifyUser:false,
+                resendOTP:false
             }
         };
         this.toggleModal=this.toggleModal.bind(this)
@@ -376,8 +476,10 @@ class Header extends Component {
                     </div>
                     <LoginForm modal={this.state.modal} toggleModal={this.toggleModal} login={this.props.login}  handleLogin={this.handleLogin}/>
                     <RegisterForm modal={this.state.modal} toggleModal={this.toggleModal} register={this.props.register} availableUName={this.props.availableUName} loginState={this.props.loginState} />
-                    <ForgetPassword modal={this.state.modal} toggleModal={this.toggleModal}/>
-                    <ChangePassword modal={this.state.modal} toggleModal={this.toggleModal}/>
+                    <ForgetPassword modal={this.state.modal} toggleModal={this.toggleModal} forgetPassword={this.props.forgetPassword}/>
+                    <ChangePassword modal={this.state.modal} toggleModal={this.toggleModal} changePassword={this.props.changePassword}/>
+                    <VerifyUser modal={this.state.modal} toggleModal={this.toggleModal} verifyUser={this.props.verifyUser}/>
+                    <ResendOTP modal={this.state.modal} toggleModal={this.toggleModal} resendOTP={this.props.resendOTP}/>
                 </Navbar>
                 <Jumbotron>
                     <div className="container">

@@ -8,7 +8,7 @@ import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import { connect } from 'react-redux';
-import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit } from '../redux/ActionCreater';//addComments is an action
+import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 const mapDispatchToProps=(dispatch)=>({
@@ -25,7 +25,11 @@ const mapDispatchToProps=(dispatch)=>({
   register:(user)=>dispatch(register(user)),
   availableUName:(username)=>dispatch(availableUName(username)),
   commentDelete:(commentId,dishId)=>dispatch(commentDelete(commentId,dishId)),
-  commentEdit:(commentId,dishId,comment)=>dispatch(commentEdit(commentId,dishId,comment))
+  commentEdit:(commentId,dishId,comment)=>dispatch(commentEdit(commentId,dishId,comment)),
+  forgetPassword:(value)=>dispatch(forgetPassword(value)),
+  changePassword:(value)=>dispatch(changePassword(value)),
+  resendOTP:(value)=>dispatch(resendOTP(value)),
+  verifyUser:(value)=>dispatch(verifyUser(value))
 })
 const mapStateToProps=(state)=>{
   return {
@@ -85,7 +89,14 @@ class Main extends Component {
     // console.log(this.props.logout.toString())
     return (
       <div>
-        <Header login={this.props.login} loginState={this.props.loginState} logout={this.props.logout} register={this.props.register} availableUName={this.props.availableUName}/>
+        <Header login={this.props.login} loginState={this.props.loginState} 
+          logout={this.props.logout} register={this.props.register} 
+          availableUName={this.props.availableUName}
+          forgetPassword={this.props.forgetPassword}
+          changePassword={this.props.changePassword}
+          resendOTP={this.props.resendOTP}
+          verifyUser={this.props.verifyUser}
+          />
         <TransitionGroup>
           <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
             <Switch location={this.props.location}>

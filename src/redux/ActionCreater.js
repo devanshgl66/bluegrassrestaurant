@@ -388,7 +388,7 @@ export const register=(user)=>(dispatch)=>{
     .catch(error =>  { console.log('Registration error', error); alert('Registration Failed\nError: '+(error)); });
 }
 export const availableUName=(username)=>(dispatch)=>{
-    dispatch(usernameAvailable({loading:true,available:false}))
+    // dispatch(usernameAvailable({loading:true,available:false}))
     return fetch(BaseUrl+'users/availableUName',{
         method:'post',
         body:JSON.stringify({username:username}),
@@ -422,3 +422,31 @@ export const usernameAvailable=(ava)=>({
     type:ActionTypes.AVAILABLEUSERNAME,
     payload:ava
 })
+export const forgetPassword=(email)=>dispatch=>{
+    return userAndOTP(email,'users/forgetPassword/genOTP')
+}
+export const changePassword=(value)=>dispatch=>{
+    return userAndOTP(value,'users/forgetPassword/changePassword')
+}
+export const resendOTP=(email)=>dispatch=>{
+    return userAndOTP(email,'users/verify/resendOTP')
+}
+export const verifyUser=(value)=>dispatch=>{
+    return userAndOTP(value,'users/verify/verify')
+}
+const userAndOTP=(value,Url)=>{
+    return fetch(BaseUrl+Url,{
+        method:'post',
+        body:JSON.stringify(value),
+        headers:{
+            'content-type':'application/json'
+        },
+        credentials:'include'
+    })
+    .then(response=>response.json())
+    .then((response)=>{
+        return response;
+    })
+    
+    .catch(error =>error);
+}
