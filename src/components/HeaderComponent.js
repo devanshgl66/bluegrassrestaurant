@@ -154,7 +154,7 @@ const ChangePassword=(props)=>{
 }
 const VerifyUser=(props)=>{
     const handleVerifyUser=(value)=>{
-        console.log(verifyUser.toString())
+        // console.log(verifyUser.toString())
         props.verifyUser(value)
         .then((res)=>{
             if(res.status){
@@ -272,7 +272,7 @@ const RegisterForm=(props)=>{
                                     }
                                 }}
                             />
-                            {isloading&&<i class="fa fa-spinner"/>}
+                            {isloading&&<i className="fa fa-spinner"/>}
                             <Errors
                                 className='text-danger'
                                 model='.username'
@@ -357,7 +357,7 @@ const RegisterForm=(props)=>{
     )
 }
 const handleRegister=(values,register)=>{
-    console.log(values)
+    // console.log(values)
     register(values)
 }
 const LoginButton=(props)=>{

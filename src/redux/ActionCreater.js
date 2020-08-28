@@ -372,8 +372,12 @@ export const register=(user)=>(dispatch)=>{
     .then((response)=>{
         // alert(JSON.stringify(response))
         // response=response.json()
+        // console.log(response)
         if(response.success===false){
-            var err=new Error(response.status)
+            if (response.err)
+                var err=new Error(response.err.message)
+            else 
+                var err=new Error(response.status)
             throw err
         }
         else
@@ -385,7 +389,7 @@ export const register=(user)=>(dispatch)=>{
     .then(response=>{
         alert(response.status)
     })
-    .catch(error =>  { console.log('Registration error', error); alert('Registration Failed\nError: '+(error)); });
+    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message)); });
 }
 export const availableUName=(username)=>(dispatch)=>{
     // dispatch(usernameAvailable({loading:true,available:false}))
