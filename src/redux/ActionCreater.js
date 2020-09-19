@@ -30,24 +30,16 @@ export const fetchDishes=()=>(dispatch)=>{
     dispatch(dishesLoading(true))
     // console.log('Url:'+BaseUrl)
     fetch(BaseUrl+'dishes')
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
+    .then(response=>{
+        if(response.ok)
+            return response.json()
         else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
+            throw new Error(response)
     })
     .then((response)=>{
         dispatch(addDishes(response))
     })
-    .catch(error =>  { console.log('fetching dishes', error);dispatch(dishesFailed(error));alert("Error"+error) });
+    .catch(error =>  { console.log('fetching dishes', error);dispatch(dishesFailed(error));alert("Some Error occured.Please try again later") });
 }
 
 //addComments is a action.
@@ -87,7 +79,8 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         dishId: dishId,
         rating: rating,
         author: author,
-        comment: comment
+        comment: comment,
+        // token:cookie.load('token')
     };
     newComment.date = new Date().toISOString();
     // alert(JSON.stringify(newComment))
@@ -95,7 +88,8 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         method: 'POST',
         body: JSON.stringify(newComment),
         headers: {
-          "content-type": "application/json"
+          "content-type": "application/json",
+          "authorization":`Bearer ${cookie.load('token')}`
         },
         credentials: "include"
     })
@@ -126,8 +120,10 @@ export const commentDelete=(commentId,dishId)=>(dispatch)=>{
         method:'delete',
         credentials:'include',
         headers:{
-            'content-type':'application/json'
-        }
+            'content-type':'application/json',
+            "authorization":`Bearer ${cookie.load('token')}`
+        },
+        // body:JSON.stringify({token:cookie.load('token')})
     })
     .then(response=>response.json())
     .then((response)=>{
@@ -152,10 +148,14 @@ export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
     fetch(BaseUrl+'dishes/'+dishId+'/comments/'+commentId,{
         method:'put',
         credentials:'include',
-        body:JSON.stringify(comment),
+        body:JSON.stringify({comment:comment.comments,rating:comment.rating
+            // ,token:cookie.load('token')
+        }),
         headers:{
-            'content-type':'application/json'
-        }
+            'content-type':'application/json',
+            "authorization":`Bearer ${cookie.load('token')}`
+        },
+    
     })
     .then(response=>response.json())
     .then((response)=>{
@@ -260,7 +260,8 @@ export const postFeedback=(values)=>(dispatch)=>{
         credentials:'include',
         body:JSON.stringify(values),
         headers:{
-            'content-type':'application/json'
+            'content-type':'application/json',
+            "authorization":`Bearer ${cookie.load('token')}`
         }
     })
     .then(response=>response.json())
@@ -285,79 +286,71 @@ export const postFeedback=(values)=>(dispatch)=>{
          })
 }
 export const login=(username,password)=>(dispatch)=>{
-    
+    var payload={
+        loading:true
+    }
+    dispatch(Auth(payload));
     var values={username:username,password:password}
     fetch(BaseUrl+'users/login',{
         method:'POST',
         credentials:'include',
         body:JSON.stringify(values),
         headers:{
-            'content-type':'application/json'
+            'content-type':'application/json',
+            "authorization":`Bearer ${cookie.load('token')}`
         }
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
+    .then(response => response.json())
+    .then(response=>{
+        if(response.err){
+            throw new Error(response.err);
         }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
+        console.log(response)
+        cookie.save('token',response.token,{secure:true});
+        cookie.save('user',username,{secure:true});
+        // Dispatch the success action
+        // dispatch(fetchFavorites());
+        payload={
+            loading:false,
+            errmsg:null
+        }
+        alert('Login Success')
+        dispatch(Auth(payload));
     })
-    .then(response =>  {
-        alert(response.status)  
-        cookie.remove('login',{path:'/'})
-        cookie.save('login',true,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
-        cookie.save('user',username,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
-        if(response.success)
-            dispatch(loginsuccess)
-        else
-            dispatch(loginfailed)
+    .catch(error => {
+        payload={
+            loading:false,
+            errmsg:error.message
+        }
+        console.log(error)
+        alert(error.message)
+        dispatch(Auth(payload))
     })
-    .catch(error =>  { 
-    console.log('Login error', error); alert('Login Failed\n'+error); });
 }
-export const loginsuccess={
-    type:ActionTypes.LOGIN
-}
-export const loginfailed={
-    type:ActionTypes.LOGIN
-}
+export const Auth=(payload)=>({
+    type:ActionTypes.LOGIN,
+    payload:payload
+})
 export const logout=()=>(dispatch)=>{
     fetch(BaseUrl+'users/logout',{
         method:'post',
         credentials:'include',
         headers:{
-            'content-type':'application/json'
-        }
+            'content-type':'application/json',
+            "authorization":`Bearer ${cookie.load('token')}`
+        },
+        // body:JSON.stringify({token:cookie.load('token')})
     })
     .then(response=>response.json())
     .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
+        if(response.err)
+            throw new Error(response.err)
+        cookie.remove('token',{path:'/',secure:true})
+        cookie.remove('user',{path:'/',secure:true})
+        alert("Logout success.")
+        dispatch(Auth)
     })
-    .then((response)=>{
-        cookie.remove('login',{path:'/'})
-        cookie.save('login',false,{path:'/',expires:new Date(Date.now()+24*60*60*1000)})
-        cookie.remove('user',{path:'/'})
-        alert(response.status)
-        dispatch(loginfailed)
-    })
-    .catch(error =>  { console.log('Logout error', error); alert('Logout Failed\nError: '+(error)); });
+    .catch(error=>{console.log('Logout error', error); alert('Logout Failed\nError: '+(error)); });
 }
 export const register=(user)=>(dispatch)=>{
     fetch(BaseUrl+'users/signup',{

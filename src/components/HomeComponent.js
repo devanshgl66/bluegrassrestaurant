@@ -16,20 +16,29 @@ function RenderCard(props) {
             <h4>{errMsg}</h4>
         )
     else if(item){
+        let height=4;
+        if(item.designation)
+            height--;
         return(
-            <FadeTransform in  
-            transformProps={{
-                exitTransform: 'scale(0.5) translateY(-50%)'
-            }}>
-            <Card>
-                <CardImg src={BaseUrl + item.image} alt={item.name}/>
-                <CardBody>
-                <CardTitle>{item.name}</CardTitle>
-                {item.designation ? <CardSubtitle>{item.designation}</CardSubtitle> : null }
-                <CardText>{item.description}</CardText>
-                </CardBody>
-            </Card>
-            </FadeTransform>
+            <Card >
+                <FadeTransform in  
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                    <CardImg style={{height:'275px',objectFit:'cover'}}
+                    src={BaseUrl + item.image} alt={item.name}/>
+                    <CardBody>
+                    <CardTitle>{item.name}</CardTitle>
+                    {item.designation ? <CardSubtitle>{item.designation}</CardSubtitle>: null }
+                    <CardText 
+                    style={{overflow:"hidden",WebkitLineClamp:height,textOverflow:"ellipsis",display:"-webkit-box",WebkitBoxOrient:"vertical"}}
+                    >
+                        {item.description}
+                    </CardText>
+                    </CardBody>
+                </FadeTransform>
+             </Card>
+           
         );
     }
     else{
@@ -41,22 +50,22 @@ function RenderCard(props) {
 function Home(props) {
     return(
         <div className="container">
-            <div className="row align-items-start">
-                <div className="col-12 col-md m-1">
-                    <RenderCard item={props.dish}
-                        isLoading={props.dishesLoading} 
-                        errMsg={props.dishErrMess}
-                    />
-                    {/* <p>{props.dish.name}</p> */}
-                </div>
-                <div className="col-12 col-md m-1">
-                <RenderCard item={props.promotion} isLoading={props.promoLoading} errMess={props.promoErrMess} />
-                </div>
-                <div className="col-12 col-md m-1">
-                    <RenderCard item={props.leader} 
-                        isLoading={props.leaderLoading}
-                        errMsg={props.leaderMsg}/>
-                </div>
+            <div className="row align-items-start card-deck">
+                <RenderCard item={props.dish}
+                    isLoading={props.dishesLoading} 
+                    errMsg={props.dishErrMess} 
+                    className="col-12 col-md m-1"
+                />
+                <RenderCard className="col-12 col-md m-1" 
+                    item={props.promotion}
+                    isLoading={props.promoLoading} 
+                    errMess={props.promoErrMess}
+                />
+                <RenderCard item={props.leader}  
+                    className="col-12 col-md m-1"
+                    isLoading={props.leaderLoading}
+                    errMsg={props.leaderMsg}
+                />
             </div>
         </div>
     );

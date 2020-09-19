@@ -1,11 +1,21 @@
 import * as ActionTypes from './ActionType'
 import cookie from 'react-cookies'
-export const Login=(state={login:cookie.load('login')||'false',available:false,username:cookie.load('user'),loading:false},action)=>{
+var initState={
+    login:cookie.load('user')?true:false,
+    username:cookie.load('user'),
+    token:cookie.load('token'),
+    loading:false,
+    errmsg:null
+}
+export const Login=(state=initState,action)=>{
     switch(action.type){
         case ActionTypes.LOGIN:
-            return({...state,login:cookie.load('login'),username:cookie.load('user')})
-        case ActionTypes.AVAILABLEUSERNAME:
-            return({...state,...action.payload})
+            return({...state,
+                ...action.payload,
+                login:cookie.load('user')?true:false,
+                username:cookie.load('user'),
+                token:cookie.load('token')
+            })
         default:
             return state
     }

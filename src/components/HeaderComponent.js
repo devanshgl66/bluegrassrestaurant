@@ -3,8 +3,11 @@ import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, Jumbotron, 
 import { NavLink } from 'react-router-dom';
 import { LocalForm, Control, Errors} from 'react-redux-form';
 import { verifyUser } from '../redux/ActionCreater';
+import { Login } from '../redux/Login';
 
 const length=(len)=>(val)=> !val||val.length>len
+
+
 const LoginForm=(props)=>{
     const [username, setusername] = useState('')
     const [password, setpassword] = useState('')
@@ -28,8 +31,7 @@ const LoginForm=(props)=>{
                                     onClick={()=>{props.toggleModal('login');props.toggleModal('forgetPassword')}}
                                 >Forget Password</Button>
                                 &nbsp;
-                                <Button type='submit' color='primary'
-                                >Submit</Button>
+                                <Button type='submit' color='primary'>Submit</Button>
                             </FormGroup>
                         </LocalForm>
                     </ModalBody>
@@ -364,7 +366,7 @@ const LoginButton=(props)=>{
     // console.log(props.logout.toString())
     
     // var cookie_login=cookie.load('login')
-    if (props.login==='false')
+    if (props.login===false)
     // if(cookie_login===undefined || cookie_login==='false')
     {
         return(
