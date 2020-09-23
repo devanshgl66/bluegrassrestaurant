@@ -7,8 +7,9 @@ import {Route,Switch,Redirect,withRouter} from 'react-router-dom'
 import Home from './HomeComponent'
 import Dish from './DishdetailComponent'
 import About from './AboutComponent'
+import Favorites from './FavoriteComponent';
 import { connect } from 'react-redux';
-import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser } from '../redux/ActionCreater';//addComments is an action
+import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser, fetchFavorites, postFavorite, deleteFavorite, addNewDishes, deleteNewDishes, EditDishes } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 const mapDispatchToProps=(dispatch)=>({
@@ -29,7 +30,13 @@ const mapDispatchToProps=(dispatch)=>({
   forgetPassword:(value)=>dispatch(forgetPassword(value)),
   changePassword:(value)=>dispatch(changePassword(value)),
   resendOTP:(value)=>dispatch(resendOTP(value)),
-  verifyUser:(value)=>dispatch(verifyUser(value))
+  verifyUser:(value)=>dispatch(verifyUser(value)),
+  fetchFavorites: () => dispatch(fetchFavorites()),
+  postFavorite: (dishId) => dispatch(postFavorite(dishId)),
+  deleteFavorite: (dishId) => dispatch(deleteFavorite(dishId)),
+  addNewDish:(dish)=>dispatch(addNewDishes(dish)),
+  deleteDish:(dish)=>dispatch(deleteNewDishes(dish)),
+  editDish:(dish)=>dispatch(EditDishes(dish))
 })
 const mapStateToProps=(state)=>{
   return {
@@ -37,7 +44,8 @@ const mapStateToProps=(state)=>{
     comments: state.comments,
     promotions: state.promotions,
     leaders: state.leaders,
-    loginState:state.loginState
+    loginState:state.loginState,
+    favorites:state.favorites
   }
 }
 class Main extends Component {
@@ -47,6 +55,7 @@ class Main extends Component {
     // this.props.fetchComments();
     this.props.fetchPromos();
     this.props.fetchLeaders()
+    this.props.fetchFavorites();
   }
   onDishSelect(dishId) {
     this.setState({ selectedDish: dishId});
@@ -70,6 +79,7 @@ class Main extends Component {
       )
     }
     const DishWithId=({match})=>{
+      console.log(this.props.favorites.favorites?this.props.favorites.favorites.some((dish) => dish._id === match.params.dishId):false)
       // alert(this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0])
       return(
         <Dish dish={this.props.dishes.dishes.filter((dish) => dish.id === match.params.dishId)[0]}
@@ -82,11 +92,15 @@ class Main extends Component {
         fetchComments={this.props.fetchComments}
         username={this.props.loginState.username}
         commentDelete={this.props.commentDelete}
-        commentEdit={this.props.commentEdit}        
+        commentEdit={this.props.commentEdit}   
+        postFavorite={this.props.postFavorite}   
+        favorites={this.props.favorites}  
+        deleteFavorite={this.props.deleteFavorite}
         />
       )
     }
     // console.log(this.props.logout.toString())
+    // console.log(this.props.favorites)
     return (
       <div>
         <Header login={this.props.login} loginState={this.props.loginState} 
@@ -101,10 +115,11 @@ class Main extends Component {
           <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
             <Switch location={this.props.location}>
                   <Route path='/home' component={HomePage} />
-                  <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} />} />
+                  <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} loginState={this.props.loginState} addDish={this.props.addNewDish} deleteDish={this.props.deleteDish} editDish={this.props.editDish}/>} />
                   <Route path='/menu/:dishId' component={DishWithId}/>
                   <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postfeedback={this.props.postfeedback}/>}/>
                   <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
+                  <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
                   <Redirect to="/home"/>
               </Switch>
             </CSSTransition>

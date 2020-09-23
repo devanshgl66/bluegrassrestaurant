@@ -5,6 +5,7 @@ import {Leaders} from './Leaders'
 import {Promotions} from './Promotions'
 import {Comments} from './Comments'
 import {feedback} from './form'
+import { favorites } from './favorites';
 
 import logger from 'redux-logger'
 import thunk from 'redux-thunk'
@@ -19,6 +20,7 @@ export const ConfigStore=()=>{
         promotions:Promotions,
         comments:Comments,
         loginState:Login,
+        favorites:favorites,
         ...createForms({
             feedback:feedback
         })

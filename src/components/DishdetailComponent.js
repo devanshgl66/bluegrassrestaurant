@@ -132,7 +132,7 @@ function RenderComment({cmts,postComments,dishId,username,commentDelete,commentE
                     <Col>
                         <Pagination 
                             color='secondary' shape='rounded' count={totpage} 
-                            showFirstButton showLastButton
+                            showFirstButton showLastButton defaultPage={page}
                             onChange={(event,page)=>setpage(page)}/>
                     </Col>
                 </Row>
@@ -164,7 +164,6 @@ class Dish extends Component{
     render(){
         //dish is in props
         var dish=this.props.dish;
-        // console.log(window.location)
         if(this.props.dishLoading)
             return(
                 <Loading/>
@@ -175,6 +174,8 @@ class Dish extends Component{
                 // <div>Error</div>
             )
         else if(dish){
+            let favorite=this.props.favorites.favorites?this.props.favorites.favorites.some((dish2)=> dish2._id===dish._id):false
+        
             // console.log(this.props.comment)
             // if(!this.props.comment)
             // console.log(this.props.dish.comments)
@@ -196,8 +197,18 @@ class Dish extends Component{
                             >
                                 <Card>
                                 <CardImg top src={BaseUrl + dish.image} alt={dish.name} />
-                                    <CardBody>                            
-                                        <CardTitle >{dish.name}</CardTitle>
+                                    <CardBody>
+                                        <CardTitle >
+                                            {dish.name}&nbsp;
+                                            <Button outline color="primary" onClick={() => favorite ? this.props.deleteFavorite(dish._id) : this.props.postFavorite(dish._id)}>
+                                                {favorite ?
+                                                    <span className="fa fa-heart"></span>
+                                                    : 
+                                                    <span className="fa fa-heart-o"></span>
+                                                }
+                                            </Button>
+                                            <div style={{float:"right"}}>Price: &#8377;{dish.price}</div>
+                                        </CardTitle>
                                         <CardText>{dish.description}</CardText>
                                     </CardBody>
                                 </Card>
@@ -218,7 +229,7 @@ class Dish extends Component{
             )
         }
         else{
-            return(<h1>Error occured</h1>)
+            return(<h1></h1>)
         }
     }
 }

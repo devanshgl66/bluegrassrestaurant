@@ -4,6 +4,7 @@ var initState={
     login:cookie.load('user')?true:false,
     username:cookie.load('user'),
     token:cookie.load('token'),
+    admin:cookie.load('admin'),
     loading:false,
     errmsg:null
 }
@@ -14,7 +15,8 @@ export const Login=(state=initState,action)=>{
                 ...action.payload,
                 login:cookie.load('user')?true:false,
                 username:cookie.load('user'),
-                token:cookie.load('token')
+                token:cookie.load('token'),
+                admin:cookie.load('admin')
             })
         default:
             return state

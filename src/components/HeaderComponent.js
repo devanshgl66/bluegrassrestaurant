@@ -363,11 +363,7 @@ const handleRegister=(values,register)=>{
     register(values)
 }
 const LoginButton=(props)=>{
-    // console.log(props.logout.toString())
-    
-    // var cookie_login=cookie.load('login')
-    if (props.login===false)
-    // if(cookie_login===undefined || cookie_login==='false')
+    if (props.loginState.login===false)
     {
         return(
             <Fragment>
@@ -390,14 +386,17 @@ const LoginButton=(props)=>{
         )
     }
     else{
-        // console.log(props.logout)
         return(
-            <NavItem>
-                <Button color='primary' onClick={()=>props.handleLogout(props.logout)}>
-                    <span className="fa fa-sign-out fa-lg"></span>Logout
-                </Button>
-            </NavItem>
-        )}
+            <Fragment>
+                <NavItem><h4 className='text-success' style={{display:'inline',paddingTop:'100px',marginRight:'3px'}}>{props.loginState.username}</h4></NavItem>
+                <NavItem>
+                    <Button color='primary' onClick={()=>props.handleLogout(props.logout)}>
+                        <span className="fa fa-sign-out fa-lg"></span>Logout
+                    </Button>
+                </NavItem>
+            </Fragment>
+        )
+    }
 }
 
 class Header extends Component {
@@ -444,11 +443,6 @@ class Header extends Component {
         // alert('Bye')
     }
     render() {
-        // this.props.availableUName('admin')
-        // alert(JSON.stringify(this.props.logout))
-        // console.log(document.cookie)
-        // console.log(this.props.logout)
-        // console.log(this)
         return(
             <div>
                 <Navbar dark expand="md">
@@ -470,9 +464,12 @@ class Header extends Component {
                             <NavItem>
                                 <NavLink className="nav-link" to='/contactus'><span className="fa fa-address-card fa-lg"></span> Contact Us</NavLink>
                             </NavItem>
+                            <NavItem>
+                                <NavLink className="nav-link" to="/favorites"><span className="fa fa-heart fa-lg"></span> My Favorites</NavLink>
+                            </NavItem>
                             </Nav>
                             <Nav className='ml-auto' navbar>
-                                <LoginButton login={this.props.loginState.login} logout={this.props.logout} toggleModal={this.toggleModal} handleLogout={this.handleLogout}/>    
+                                <LoginButton loginState={this.props.loginState} logout={this.props.logout} toggleModal={this.toggleModal} handleLogout={this.handleLogout}/>    
                             </Nav>
                         </Collapse>
                     </div>

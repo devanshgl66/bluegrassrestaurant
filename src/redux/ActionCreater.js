@@ -308,6 +308,7 @@ export const login=(username,password)=>(dispatch)=>{
         console.log(response)
         cookie.save('token',response.token,{secure:true});
         cookie.save('user',username,{secure:true});
+        cookie.save('admin',response.admin,{secure:true});
         // Dispatch the success action
         // dispatch(fetchFavorites());
         payload={
@@ -347,8 +348,9 @@ export const logout=()=>(dispatch)=>{
             throw new Error(response.err)
         cookie.remove('token',{path:'/',secure:true})
         cookie.remove('user',{path:'/',secure:true})
+        cookie.remove('admin',{path:'/',secure:true})
         alert("Logout success.")
-        dispatch(Auth)
+        dispatch(Auth())
     })
     .catch(error=>{console.log('Logout error', error); alert('Logout Failed\nError: '+(error)); });
 }
@@ -446,4 +448,201 @@ const userAndOTP=(value,Url)=>{
     })
     
     .catch(error =>error);
+}
+
+export const postFavorite = (dishId) => (dispatch) => {
+
+    const bearer = 'Bearer ' + cookie.load('token');
+
+    return fetch(BaseUrl + 'favorite', {
+        method: "POST",
+        body: JSON.stringify({"dishId": dishId}),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': bearer
+        },
+        credentials: "include"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(favorites => { console.log('Favorite Added', favorites); dispatch(addFavorites(favorites)); })
+    .catch(error => dispatch(favoritesFailed(error.message)));
+}
+
+export const deleteFavorite = (dishId) => (dispatch) => {
+
+    const bearer = 'Bearer ' + cookie.load('token');
+
+    return fetch(BaseUrl + 'favorite/'+dishId, {
+        method: "DELETE",
+        headers: {
+          'Authorization': bearer
+        },
+        body:JSON.stringify({dishId:dishId}),
+        credentials: "include"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(favorites => { console.log('Favorite Deleted', favorites); dispatch(addFavorites(favorites)); })
+    .catch(error => dispatch(favoritesFailed(error.message)));
+};
+
+export const fetchFavorites = () => (dispatch) => {
+    dispatch(favoritesLoading(true));
+
+    const bearer = 'Bearer ' + cookie.load('token');
+
+    return fetch(BaseUrl + 'favorite', {
+        headers: {
+            'Authorization': bearer
+        },
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        else 
+            throw new Error(response)
+    })
+    .then(favorites => dispatch(addFavorites(favorites)))
+    .catch(error => dispatch(favoritesFailed(error)));
+}
+
+export const favoritesLoading = () => ({
+    type: ActionTypes.FAVORITES_LOADING
+});
+
+export const favoritesFailed = (errmess) => ({
+    type: ActionTypes.FAVORITES_FAILED,
+    payload: errmess
+});
+
+export const addFavorites = (favorites) => ({
+    type: ActionTypes.ADD_FAVORITES,
+    payload: favorites
+});
+
+export const addNewDishes=(dish)=>dispatch=>{
+    dish["image"]=dish.image[0]
+    let fd=new FormData();
+    for(var it in dish)
+        fd.append(it,dish[it])
+    const bearer = 'Bearer ' + cookie.load('token');
+    return fetch(BaseUrl + 'dishes', {
+        method: "POST",
+        body: fd,
+        headers: {
+          'Authorization': bearer
+        },
+        credentials: "include"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(dishes => { console.log('New Dish Added', dishes.length);alert("Dish Added."); dispatch(addDishes(dishes)); })
+    .catch(error => alert('Some Error occured.Please try again'));
+}
+
+export const deleteNewDishes=(dish)=>dispatch=>{
+    const bearer = 'Bearer ' + cookie.load('token');
+    return fetch(BaseUrl + 'dishes/'+dish._id, {
+        method: "DELETE",
+        body: JSON.stringify(dish),
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': bearer
+        },
+        credentials: "include"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(dishes => { console.log('Dish Deleted', dishes.length);alert("Dish Deleted."); dispatch(addDishes(dishes)); })
+    .catch(error => alert('Some Error occured.Please try again'));
+}
+
+export const EditDishes=(dish)=>dispatch=>{
+    let fd,header={};
+    if(typeof(dish.image)!='string'){
+        dish["image"]=dish.image[0]
+        console.log(dish.comments)
+        dish.comments=JSON.stringify(dish.comments)
+        fd=new FormData();
+        for(var it in dish)
+            fd.append(it,dish[it])
+    }
+    else{
+        fd=JSON.stringify(dish);
+        header={
+            'Content-Type':"application/json"
+        }
+    }
+    console.log(fd)
+    const bearer = 'Bearer ' + cookie.load('token');
+    return fetch(BaseUrl + 'dishes/'+dish._id, {
+        method: "PUT",
+        body: fd,
+        headers: {
+          'Authorization': bearer,
+          ...header
+        },
+        credentials: "include"
+    })
+    .then(response => {
+        if (response.ok) {
+          return response;
+        } else {
+          var error = new Error('Error ' + response.status + ': ' + response.statusText);
+          error.response = response;
+          throw error;
+        }
+      },
+      error => {
+            throw error;
+      })
+    .then(response => response.json())
+    .then(dishes => { console.log('Dish Edited', dishes.length);alert("Dish Edited."); dispatch(addDishes(dishes)); })
+    .catch(error => alert('Some Error occured.Please try again'));
 }
