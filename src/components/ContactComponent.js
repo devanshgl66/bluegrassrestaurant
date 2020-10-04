@@ -46,9 +46,9 @@ class Contact extends Component {
                             <address>
                             old jhajjar road,charkhi dadri
                             <br />
-                            <i className="fa fa-phone"></i>: +852 1234 5678<br />
-                            <i className="fa fa-fax"></i>: +852 8765 4321<br />
-                            <i className="fa fa-envelope"></i>: <a href="mailto:bluegrass@food.net">bluegrass@food.net</a>
+                            <i className="fa fa-phone"></i>: +9416749221<br />
+                            <i className="fa fa-fax"></i>: +123 4567 8912<br />
+                            <i className="fa fa-envelope"></i>: <a href="mailto:restaurantbluegrass@hotmail.com">restaurantbluegrass@hotmail.com</a>
                             </address>
                     </div>
                     <div className="col-6 col-sm-6 offset-sm-1">
@@ -57,9 +57,9 @@ class Contact extends Component {
                     </div>
                     <div className="col-12 col-sm-11 offset-sm-1">
                         <div className="btn-group" role="group">
-                            <a role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"></i> Call</a>
-                            <a role="button" href='a' className="btn btn-info"><i className="fa fa-skype"></i> Skype</a>
-                            <a role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</a>
+                            <a role="button" className="btn btn-primary" href="tel:+9416749221"><i className="fa fa-phone"></i> Call</a>
+                            <a role="button" href='#' className="btn btn-info"><i className="fa fa-skype"></i> Skype</a>
+                            <a role="button" className="btn btn-success" href="mailto:restaurantbluegrass@hotmail.com"><i className="fa fa-envelope-o"></i> Email</a>
                         </div>
                     </div>
                 </div>

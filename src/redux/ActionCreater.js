@@ -4,9 +4,35 @@
 //Every action must contain 'type' and 'payload' key.
 import * as ActionTypes from './ActionType'
 import {BaseUrl} from '../shared/baseUrl'
-import {fetch} from 'cross-fetch'
+// import fetch from 'cross-fetch'
 import cookie from 'react-cookies'
-
+const sendError=(err)=>{
+    var errmsg='';
+    if((typeof(err)=='string'))
+        errmsg= err
+    else if(err.err!=undefined)
+        errmsg= err.err
+    else if(err.message!=undefined)
+        errmsg= err.message
+    else
+        errmsg= 'Some error occured.Try Again later.'
+    return errmsg;
+}
+const printError=(err)=>{
+    var errmsg=sendError(err);
+    console.error('error'+errmsg);
+    alert(errmsg)
+}
+const handleResponse=(response)=>{
+    return new Promise((resolve,reject)=>{
+        if(response.ok)
+            response.json()
+            .then((res)=>resolve(res))
+        else
+            response.json()
+            .then((res)=>reject(res))
+    })
+}
 export const addDishes=(dishes)=>({
     type:ActionTypes.ADD_DISHES,
     payload:dishes
@@ -30,16 +56,13 @@ export const fetchDishes=()=>(dispatch)=>{
     dispatch(dishesLoading(true))
     // console.log('Url:'+BaseUrl)
     fetch(BaseUrl+'dishes')
+    .then(response=>handleResponse(response))
     .then(response=>{
-        if(response.ok)
-            return response.json()
-        else
-            throw new Error(response)
-    })
-    .then((response)=>{
         dispatch(addDishes(response))
+    },error=> dispatch(dishesFailed(sendError(error))))
+    .catch(error =>  {
+        console.log('fetching dishes',sendError(error));
     })
-    .catch(error =>  { console.log('fetching dishes', error);dispatch(dishesFailed(error));alert("Some Error occured.Please try again later") });
 }
 
 //addComments is a action.
@@ -50,24 +73,11 @@ export const addComments=(comment)=>({
 export const fetchComments = (dishId) => (dispatch) => { 
     // alert(dishId)   
     fetch(BaseUrl+'dishes/'+dishId+'/comments')
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
+    .then(response=>handleResponse(response))
     .then(comments => {
         dispatch(addComment(comments))
-    })
-    .catch(error =>  { console.log('fetch comments',  error);alert('Error'+error)  });
+    },err=> printError(err))
+    .catch(error =>  { console.error('fetch comments'+  printError(error));printError(error)});
 };
 export const addComment = (comments) => ({
     type: ActionTypes.ADD_COMMENTS,
@@ -93,22 +103,11 @@ export const postComment = (dishId, rating, author, comment) => (dispatch) => {
         },
         credentials: "include"
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(response => dispatch(refreshDish(response)))
-    .catch(error =>  { console.log('Post comments', error); alert('Your comment could not be posted\nError: '+error); });
+    .then(response=>handleResponse(response))
+    .then(response=>{
+        dispatch(refreshDish(response))
+    },err=> printError(err))
+    .catch(error =>  { printError(error) });
 };
 
 export const commentsFailed = (errmess) => ({
@@ -123,25 +122,13 @@ export const commentDelete=(commentId,dishId)=>(dispatch)=>{
             'content-type':'application/json',
             "authorization":`Bearer ${cookie.load('token')}`
         },
-        // body:JSON.stringify({token:cookie.load('token')})
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // response=response.json()
-        // alert(JSON.stringify(response))
-        // console.log(response)
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(dish => {dispatch(refreshDish(dish));alert('Comment Deleted')})
-    .catch(error =>  { console.log('Delete Comment',  error);alert(error)  });
+    .then(response=>handleResponse(response))
+    .then(dish => {
+        dispatch(refreshDish(dish))
+        alert('Comment Deleted')
+    },err=> printError(err))
+    .catch(error =>  { printError(error)  });
 }
 
 export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
@@ -149,7 +136,6 @@ export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
         method:'put',
         credentials:'include',
         body:JSON.stringify({comment:comment.comments,rating:comment.rating
-            // ,token:cookie.load('token')
         }),
         headers:{
             'content-type':'application/json',
@@ -157,25 +143,12 @@ export const commentEdit=(commentId,dishId,comment)=>(dispatch)=>{
         },
     
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
+    .then(response=>handleResponse(response))
     .then(dish => {
         alert('Comment Changed');
         dispatch(refreshDish(dish))
-    })
-    .catch(error =>  { console.log('Edit Comment Error', error);alert(error)  });
+    },err=> printError(err))
+    .catch(error =>  {(printError(error))  });
 }
 
 
@@ -185,22 +158,9 @@ export const fetchPromos = () => (dispatch) => {
     dispatch(promosLoading());
 
     return fetch(BaseUrl + 'promotions')
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then(promos => dispatch(addPromos(promos)))
-    .catch(error =>  { console.log('fetch promos', error);alert(error)  });
+    .then(response=>handleResponse(response))
+    .then(promos => dispatch(addPromos(promos)),err=> console.error(sendError(err)))
+    .catch(error =>  { console.log('fetch promos', sendError(error)); });
 }
 
 export const promosLoading = () => ({
@@ -234,24 +194,11 @@ export const fetchleader=()=>(dispatch)=>{
     dispatch(leaderLoading())
 
     fetch(BaseUrl+'leaders')
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
+    .then(response=>handleResponse(response))
     .then((leader)=>{
         dispatch(addLeader(leader))
-    })
-    .catch(error =>  { console.log('post comments', error);alert('Error'+error)  });
+    },err=> console.log('post comments'+ sendError(err)))
+    .catch(error =>  { console.log('post comments'+ sendError(error));  });
 }
 
 export const postFeedback=(values)=>(dispatch)=>{
@@ -264,25 +211,12 @@ export const postFeedback=(values)=>(dispatch)=>{
             "authorization":`Bearer ${cookie.load('token')}`
         }
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
-    .then((response)=>alert('Your feedback is send.'))
+    .then(response=>handleResponse(response))
+    .then((response)=>alert('Your feedback is recorded.'),err=> printError(err))
     .catch(error=>
         {
-             console.log('post feedback', error); 
-             alert('Your feedback could not be posted\n '+error);
+             console.log('post feedback'+ sendError(error)); 
+             alert('Your feedback could not be posted\n '+sendError(error));
          })
 }
 export const login=(username,password)=>(dispatch)=>{
@@ -300,31 +234,26 @@ export const login=(username,password)=>(dispatch)=>{
             "authorization":`Bearer ${cookie.load('token')}`
         }
     })
-    .then(response => response.json())
+    .then(response=>handleResponse(response))
     .then(response=>{
-        if(response.err){
-            throw new Error(response.err);
-        }
-        console.log(response)
         cookie.save('token',response.token,{secure:true});
         cookie.save('user',username,{secure:true});
         cookie.save('admin',response.admin,{secure:true});
-        // Dispatch the success action
-        // dispatch(fetchFavorites());
         payload={
             loading:false,
             errmsg:null
         }
-        alert('Login Success')
+        alert(response.status)
         dispatch(Auth(payload));
-    })
+        dispatch(fetchFavorites())
+    },err=> {throw new Error(err)})
     .catch(error => {
         payload={
             loading:false,
-            errmsg:error.message
+            errmsg:sendError(error)
         }
         console.log(error)
-        alert(error.message)
+        (printError(error))
         dispatch(Auth(payload))
     })
 }
@@ -339,20 +268,17 @@ export const logout=()=>(dispatch)=>{
         headers:{
             'content-type':'application/json',
             "authorization":`Bearer ${cookie.load('token')}`
-        },
-        // body:JSON.stringify({token:cookie.load('token')})
+        }
     })
-    .then(response=>response.json())
+    .then(response=>handleResponse(response))
     .then((response)=>{
-        if(response.err)
-            throw new Error(response.err)
         cookie.remove('token',{path:'/',secure:true})
         cookie.remove('user',{path:'/',secure:true})
         cookie.remove('admin',{path:'/',secure:true})
-        alert("Logout success.")
+        alert(response.status)
         dispatch(Auth())
-    })
-    .catch(error=>{console.log('Logout error', error); alert('Logout Failed\nError: '+(error)); });
+    },err=>{throw new Error(err)})
+    .catch(error=>{console.log('Logout error', error); alert('Logout Failed\nError: '+sendError(error)); });
 }
 export const register=(user)=>(dispatch)=>{
     fetch(BaseUrl+'users/signup',{
@@ -363,28 +289,11 @@ export const register=(user)=>(dispatch)=>{
             'content-type':'application/json'
         }
     })
-    .then(response=>response.json())
-    .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        // console.log(response)
-        if(response.success===false){
-            if (response.err)
-                var err=new Error(response.err.message)
-            else 
-                var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
-    },error=>{
-        var errmess = new Error(error.message);
-        throw errmess;
-    })
+    .then(response=>handleResponse(response))
     .then(response=>{
         alert(response.status)
-    })
-    .catch(error =>  { console.log('Registration error', error.message); alert('Registration Failed\nError: '+(error.message)); });
+    },err=> printError(err))
+    .catch(error =>  { console.log('Registration error');console.log(error); alert('Registration Failed\nError: '+sendError(error)); });
 }
 export const availableUName=(username)=>(dispatch)=>{
     // dispatch(usernameAvailable({loading:true,available:false}))
@@ -396,26 +305,14 @@ export const availableUName=(username)=>(dispatch)=>{
         },
         credentials:'include'
     })
-    .then(response=>response.json())
+    .then(response=>handleResponse(response))
     .then((response)=>{
-        // alert(JSON.stringify(response))
-        // response=response.json()
-        if(response.success===false){
-            var err=new Error(response.status)
-            throw err
-        }
-        else
-            return response
+        return response
     },error=>{
-        var errmess = new Error(error.message);
+        var errmess = new Error(error);
         throw errmess;
     })
-    .then(response=>{
-        // console.log(response)
-        // dispatch(usernameAvailable({loading:false,available:response.available}))
-        return response
-    })
-    .catch(error =>  { console.log('Registration error', error)});
+    .catch(error =>  { console.log('Username error', error)});
 }
 export const usernameAvailable=(ava)=>({
     type:ActionTypes.AVAILABLEUSERNAME,
@@ -442,12 +339,11 @@ const userAndOTP=(value,Url)=>{
         },
         credentials:'include'
     })
-    .then(response=>response.json())
+    .then(response=>handleResponse(response))
     .then((response)=>{
         return response;
-    })
-    
-    .catch(error =>error);
+    },err=>printError(err))
+    .catch(error =>console.error(error));
 }
 
 export const postFavorite = (dishId) => (dispatch) => {
@@ -463,21 +359,11 @@ export const postFavorite = (dishId) => (dispatch) => {
         },
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(favorites => { console.log('Favorite Added', favorites); dispatch(addFavorites(favorites)); })
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .then(response=>handleResponse(response))
+    .then(favorites => { console.log('Favorite Added', favorites); dispatch(addFavorites(favorites)); }
+    ,err=>{throw new Error(err)}
+    )
+    .catch(error => dispatch(favoritesFailed(sendError(error))));
 }
 
 export const deleteFavorite = (dishId) => (dispatch) => {
@@ -492,21 +378,10 @@ export const deleteFavorite = (dishId) => (dispatch) => {
         body:JSON.stringify({dishId:dishId}),
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(favorites => { console.log('Favorite Deleted', favorites); dispatch(addFavorites(favorites)); })
-    .catch(error => dispatch(favoritesFailed(error.message)));
+    .then(response=>handleResponse(response))
+    .then(favorites => { console.log('Favorite Deleted', favorites); dispatch(addFavorites(favorites)); }
+        ,err=>{throw (err)})
+    .catch(error => dispatch(favoritesFailed(sendError(error))));
 };
 
 export const fetchFavorites = () => (dispatch) => {
@@ -519,15 +394,9 @@ export const fetchFavorites = () => (dispatch) => {
             'Authorization': bearer
         },
     })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        else 
-            throw new Error(response)
-    })
-    .then(favorites => dispatch(addFavorites(favorites)))
-    .catch(error => dispatch(favoritesFailed(error)));
+    .then(response=>handleResponse(response))
+    .then(favorites => dispatch(addFavorites(favorites)),err=>{throw err})
+    .catch(error => dispatch(favoritesFailed(sendError(error))));
 }
 
 export const favoritesLoading = () => ({
@@ -545,7 +414,8 @@ export const addFavorites = (favorites) => ({
 });
 
 export const addNewDishes=(dish)=>dispatch=>{
-    dish["image"]=dish.image[0]
+    // dish["image"]=dish.image[0]
+    console.log(dish)
     let fd=new FormData();
     for(var it in dish)
         fd.append(it,dish[it])
@@ -558,21 +428,9 @@ export const addNewDishes=(dish)=>dispatch=>{
         },
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
+    .then(response=>handleResponse(response))
     .then(dishes => { console.log('New Dish Added', dishes.length);alert("Dish Added."); dispatch(addDishes(dishes)); })
-    .catch(error => alert('Some Error occured.Please try again'));
+    .catch(error => (printError(error)));
 }
 
 export const deleteNewDishes=(dish)=>dispatch=>{
@@ -586,27 +444,17 @@ export const deleteNewDishes=(dish)=>dispatch=>{
         },
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(dishes => { console.log('Dish Deleted', dishes.length);alert("Dish Deleted."); dispatch(addDishes(dishes)); })
-    .catch(error => alert('Some Error occured.Please try again'));
+    .then(response=>handleResponse(response))
+    .then(dishes => { console.log('Dish Deleted', dishes.length);alert("Dish Deleted."); dispatch(addDishes(dishes)); }
+        ,err=>{throw err})
+    .catch(error => (printError(error)));
 }
 
 export const EditDishes=(dish)=>dispatch=>{
+    console.log(dish)
     let fd,header={};
     if(typeof(dish.image)!='string'){
-        dish["image"]=dish.image[0]
+        // dish["image"]=dish.image[0]
         console.log(dish.comments)
         dish.comments=JSON.stringify(dish.comments)
         fd=new FormData();
@@ -619,7 +467,6 @@ export const EditDishes=(dish)=>dispatch=>{
             'Content-Type':"application/json"
         }
     }
-    console.log(fd)
     const bearer = 'Bearer ' + cookie.load('token');
     return fetch(BaseUrl + 'dishes/'+dish._id, {
         method: "PUT",
@@ -630,19 +477,8 @@ export const EditDishes=(dish)=>dispatch=>{
         },
         credentials: "include"
     })
-    .then(response => {
-        if (response.ok) {
-          return response;
-        } else {
-          var error = new Error('Error ' + response.status + ': ' + response.statusText);
-          error.response = response;
-          throw error;
-        }
-      },
-      error => {
-            throw error;
-      })
-    .then(response => response.json())
-    .then(dishes => { console.log('Dish Edited', dishes.length);alert("Dish Edited."); dispatch(addDishes(dishes)); })
-    .catch(error => alert('Some Error occured.Please try again'));
+    .then(response=>handleResponse(response))
+    .then(dishes => { console.log('Dish Edited', dishes.length);alert("Dish Edited."); dispatch(addDishes(dishes)); }
+        ,err=>{throw err})
+    .catch(error => (printError(error)));
 }

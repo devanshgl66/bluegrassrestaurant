@@ -32,7 +32,7 @@ class EditDish extends Component{
         this.handleChange = this.handleChange.bind(this)
     }
     handleChange(event) {
-        if(event.target.name=='image')
+        if(event.target.name==='image')
             this.setState({
                 'image':event.target.files[0]
             })
@@ -47,12 +47,12 @@ class EditDish extends Component{
             <Modal isOpen={this.props.modal} 
             toggle={()=>this.props.toggleModal()}
             >
-                <ModalHeader>Edit Comment</ModalHeader>
+                <ModalHeader>Edit/Add Dish</ModalHeader>
                 <ModalBody>
                     <LocalForm
                     onSubmit={(values,e)=>{
                                 if(!values.image && !this.state.image)
-                                    alert('choose image please')
+                                    alert('Please select a image')
                                 else{
                                     this.props.handleDish(values,this.state)
                                     this.props.toggleModal('editComment')
@@ -70,21 +70,30 @@ class EditDish extends Component{
                             </Col>
                         </Row>
                         <FormElement name='name' label='Name:' dish={this.state}/>                            
-                        <FormElement name='category' label='Category:' dish={this.state}/>                           
-                        <FormElement name='price' type='number' label='Price: &#8377;' dish={this.state}/>     
+                        <FormElement name='category' label='Category:' dish={this.state}/> 
+                        <Row className='form-group'>
+                            <Col>
+                                <Label htmlFor={'price'}>Price: &#8377;</Label>
+                                <Control.text type='number' min={0} model={`.${'price'}`} id={'price'} name={'price'}
+                                    placeholder={'price'} className='form-control' value={this.state['price']}
+                                    onChange={(e)=>this.setState({'price':e.target.value})}
+                                    required
+                                />
+                            </Col>
+                        </Row>
                         <Row className='form-group'>
                             <Col>
                                 Featured:&nbsp;
                                 <Label htmlFor="featured">Yes</Label>&nbsp;
                                 <Control type='radio' model='.featured' id='featured' name='featured'
                                     value={true}
-                                    checked={this.state.featured==true}
+                                    checked={this.state.featured===true}
                                     onChange={()=>this.setState({featured:true})}
                                 />&nbsp;&nbsp;
                                 <Label htmlFor="featured2">No</Label>&nbsp;
                                 <Control type='radio' model='.featured' id='featured2' name='featured'
                                     value={false} 
-                                    checked={this.state.featured==false}
+                                    checked={this.state.featured===false}
                                     onChange={()=>this.setState({featured:false})}
                                 />
                             </Col>
@@ -103,7 +112,7 @@ class EditDish extends Component{
                         <Row>
                             <Col>
                                 <Button type="submit" color="primary">
-                                    Add/Edit Comment
+                                    Add/Edit Dish
                                 </Button>
                             </Col>
                         </Row>
@@ -115,10 +124,13 @@ class EditDish extends Component{
 }
 function RenderMenuItem({dish,admin,deleteDish,editDish}){
     const handleEditDish=(values,dish)=>{
+        console.log(values)
+        console.log(dish)
         let newDish={...dish,...values}
         delete newDish.file
         console.log(newDish)
-        editDish(newDish)
+        // editDish(newDish)
+        editDish(dish)
         // alert('Dish edited')
     }
     const handleDeleteDish=(dish)=>{
@@ -135,7 +147,7 @@ function RenderMenuItem({dish,admin,deleteDish,editDish}){
                 <CardTitle>
                     <h2>
                         {dish.name}
-                        {admin=='true'?
+                        {admin==='true'?
                             <Fragment>
                                 <Button outline onClick={() => setModal(!modal)}>
                                     <i className="fa fa-pencil"/>
@@ -162,10 +174,14 @@ function Menu(props){
     const [page,setpage]=useState(1)
     // const page=1;
     const [modal,setModal]=useState(false)
-    const dishPerPage=4
+    const dishPerPage=2
     const totDish=props.dishes.dishes.length
     const totpage=Math.ceil(totDish/dishPerPage)
-    var dishNo=-1
+    const indexofLastDish=page*dishPerPage
+    const indexofFirstDish=indexofLastDish-dishPerPage
+    const currentDishes=props.dishes.dishes.slice(indexofFirstDish,indexofLastDish)
+    // alert(totDish)
+    
     const Paginate=()=>{
         if (totpage>1)
             return(
@@ -174,7 +190,7 @@ function Menu(props){
                         <Pagination 
                             color='secondary' shape='rounded' count={totpage} 
                             showFirstButton showLastButton
-                            onChange={(event,page)=>setpage(page)} size='large'
+                            onChange={(event,page)=>{setpage(page);}} size='large'
                             defaultPage={page}
                         />
                     </Col>
@@ -183,27 +199,30 @@ function Menu(props){
         else
             return(null)
     }
-    let dishes=[];
-    dishes=props.dishes.dishes.map((dish)=>{
-        dishNo++
-            if(dishNo<(page-1)*dishPerPage || dishNo>=page*dishPerPage)
-                return (null)
+    const Dishes=({dishes})=>{
+        // consol
+        if(dishes)
         return(
-            //mt-5 =>top margin:5 reactstrap
-            <div key={dish.id} className="col-12 col-md-5 m-1">
-                <RenderMenuItem dish={dish} admin={props.loginState.admin} deleteDish={props.deleteDish} editDish={props.editDish} />
+            <div className='row'>
+            {dishes.map((dish)=>(
+                <div key={dish.id} className="col-12 col-md-5 m-1">
+                    <RenderMenuItem dish={dish} admin={props.loginState.admin} deleteDish={props.deleteDish} editDish={props.editDish} />
+                </div>
+            ))}
             </div>
         )
-    })
-    // alert(dishes.length)
+        else
+            return <Fragment/>
+    }
     const handleAddDish=(values,dish)=>{
+        console.log(dish)
+        console.log(values)
         let newDish={...dish,...values}
         delete newDish.file
         console.log(newDish)
-        props.addDish(newDish);
+        props.addDish(dish);
         // alert('Dish Added')
     }
-    console.log(props.loginState.admin)
     if(props.dishes.isLoading)
         return(
             <Loading/>
@@ -224,16 +243,14 @@ function Menu(props){
                 <div className='col-12'>
                     <h3 style={{display:"inline"}}>Menu</h3> 
                     
-                    {props.loginState.admin=='true'?
+                    {props.loginState.admin==='true'?
                         <Button style={{float:'right'}} outline onClick={()=>setModal(!modal)}>Add Dish</Button>
                     :
                         <Fragment/>
                     }
                     <hr/>
                 </div>
-                <div className='row'>
-                    {dishes}
-                </div>
+                <Dishes dishes={currentDishes}/>
                 <Paginate/>
                 <EditDish modal={modal} toggleModal={()=>setModal(!modal)} handleDish={handleAddDish} dish={{}}/>
             </div>

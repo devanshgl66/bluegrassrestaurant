@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser, fetchFavorites, postFavorite, deleteFavorite, addNewDishes, deleteNewDishes, EditDishes } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
+import {LoadingModal} from './LoadingModal'
 const mapDispatchToProps=(dispatch)=>({
   addComment: (dishId, rating, author, comment) => dispatch(addComments(dishId, rating, author, comment)),
   fetchDishes: () => { dispatch(fetchDishes())},
@@ -60,6 +61,7 @@ class Main extends Component {
   onDishSelect(dishId) {
     this.setState({ selectedDish: dishId});
   }
+  
   render() {
     // console.log(this.props.availableUName('admin'))
     // console.log(this.props.login)
@@ -78,6 +80,7 @@ class Main extends Component {
         />
       )
     }
+
     const DishWithId=({match})=>{
       console.log(this.props.favorites.favorites?this.props.favorites.favorites.some((dish) => dish._id === match.params.dishId):false)
       // alert(this.props.dishes.dishes.filter((dish)=>dish.id===parseInt(match.params.dishId,10))[0])
@@ -97,6 +100,20 @@ class Main extends Component {
         favorites={this.props.favorites}  
         deleteFavorite={this.props.deleteFavorite}
         />
+      )
+    }
+    const PrivateRoute = ({ component: Component, ...rest }) => {
+      // if(!this.props.loginState.login)
+      //   alert('Login first')
+      return(
+        <Route {...rest} render={(props) => (
+        this.props.loginState.login
+          ? <Component {...props} />
+          : <Redirect to={{
+              pathname: '/home',
+              state: { from: props.location }
+            }} />
+      )} />
       )
     }
     // console.log(this.props.logout.toString())
@@ -119,7 +136,8 @@ class Main extends Component {
                   <Route path='/menu/:dishId' component={DishWithId}/>
                   <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postfeedback={this.props.postfeedback}/>}/>
                   <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
-                  <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
+                  <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
+                  {/* <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} /> */}
                   <Redirect to="/home"/>
               </Switch>
             </CSSTransition>

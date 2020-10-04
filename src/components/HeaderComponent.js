@@ -45,6 +45,10 @@ const ForgetPassword=(props)=>{
         .then((res)=>{
             if(res.status)
                 alert(res.status)
+            else if(typeof(res)=='string')
+                alert(res)
+            else if(typeof(res)=='object' && res.err!==undefined)
+                alert(res.err)
             else
                 alert('Some error occured.\nPlease try again later')
             if(res.success==true){
@@ -69,7 +73,7 @@ const ForgetPassword=(props)=>{
                             Forget Password
                         </Button>
                         <div className='text-dark'>
-                            *An email will be sent contaning OTP to change Password
+                            *An email will be sent contaning OTP to change Password.Check spam if not found.
                         </div>
                     </FormGroup>
                 </LocalForm>
@@ -84,6 +88,10 @@ const ChangePassword=(props)=>{
         .then((res)=>{
             if(res.status)
                 alert(res.status)
+            else if(typeof(res)=='string')
+                alert(res)
+            else if(typeof(res)=='object' && res.err!==undefined)
+                alert(res.err)
             else
                 alert('Some error occured.\nPlease try again later')
         })
@@ -159,11 +167,16 @@ const VerifyUser=(props)=>{
         // console.log(verifyUser.toString())
         props.verifyUser(value)
         .then((res)=>{
-            if(res.status){
+            if(res && res.status){
                 alert(res.status)
             }
-            else
+
+            else if(typeof(res)=='string')
                 alert(res)
+            else if(typeof(res)=='object' && res.err!==undefined)
+                alert(res.err)
+            else
+                alert('error occured')
         })
         props.toggleModal('verifyUser')
     }
@@ -201,8 +214,12 @@ const ResendOTP=(props)=>{
     const handleresendOTP=(value)=>{
         props.resendOTP(value)
         .then((res)=>{
-            if(res.status)
+            if(res && res.status)
                 alert(res.status)
+            else if(typeof(res)=='string')
+                alert(res)
+            else if(typeof(res)=='object' && res.err!==undefined)
+                alert(res.err)
             else
                 alert('Some error occured.\nPlease try again later')
         })
@@ -224,7 +241,7 @@ const ResendOTP=(props)=>{
                             Resend OTP
                         </Button>
                         <div className='text-dark'>
-                            *An email will be sent contaning OTP to validate account.
+                            *An email will be sent contaning OTP to validate account.Check spam if not found.
                         </div>
                     </FormGroup>
                 </LocalForm>
@@ -243,15 +260,15 @@ const RegisterForm=(props)=>{
             <ModalBody>
                 <LocalForm
                 onSubmit={(values,e)=>{
-                            console.log(values)
                             if(values.password!==values.password2)
                                 seterrorMessage('Password do not match')
                             else{
                                 seterrorMessage('')
                                 !isloading&&handleRegister({...values},props.register)
+                                props.toggleModal('register')
                             }
                             e.preventDefault();
-                            props.toggleModal('register')
+                            
                         }
                     }> 
                     <Row className='form-group'>
