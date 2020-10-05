@@ -219,6 +219,12 @@ export const postFeedback=(values)=>(dispatch)=>{
              alert('Your feedback could not be posted\n '+sendError(error));
          })
 }
+export const fetchfeedback=()=>async dispatch=>{
+    const feedback= await fetch(BaseUrl+'feedback')
+    .then(response=>handleResponse(response))
+    .then(response=>{return response},err=>{printError(err);return []})
+    return feedback
+}
 export const login=(username,password)=>(dispatch)=>{
     var payload={
         loading:true

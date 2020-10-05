@@ -9,7 +9,7 @@ import Dish from './DishdetailComponent'
 import About from './AboutComponent'
 import Favorites from './FavoriteComponent';
 import { connect } from 'react-redux';
-import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser, fetchFavorites, postFavorite, deleteFavorite, addNewDishes, deleteNewDishes, EditDishes } from '../redux/ActionCreater';//addComments is an action
+import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetchleader, postFeedback, login, logout, register, availableUName, commentDelete, commentEdit, forgetPassword, changePassword, resendOTP, verifyUser, fetchFavorites, postFavorite, deleteFavorite, addNewDishes, deleteNewDishes, EditDishes, fetchfeedback } from '../redux/ActionCreater';//addComments is an action
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 import {LoadingModal} from './LoadingModal'
@@ -22,6 +22,7 @@ const mapDispatchToProps=(dispatch)=>({
   postComment: (dishId, rating, author, comment) => dispatch(postComment(dishId, rating, author, comment,dishId)),
   fetchLeaders:()=>dispatch(fetchleader()),
   postfeedback:(values)=>dispatch(postFeedback(values)),
+  fetchfeedback:()=>dispatch(fetchfeedback()),
   login:(username,password)=>dispatch(login(username,password)),
   logout:()=>dispatch(logout()),
   register:(user)=>dispatch(register(user)),
@@ -134,7 +135,7 @@ class Main extends Component {
                   <Route path='/home' component={HomePage} />
                   <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} loginState={this.props.loginState} addDish={this.props.addNewDish} deleteDish={this.props.deleteDish} editDish={this.props.editDish}/>} />
                   <Route path='/menu/:dishId' component={DishWithId}/>
-                  <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} postfeedback={this.props.postfeedback}/>}/>
+                  <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} admin={this.props.loginState.admin} postfeedback={this.props.postfeedback} fetchfeedback={this.props.fetchfeedback}/>}/>
                   <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
                   <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
                   {/* <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} /> */}
