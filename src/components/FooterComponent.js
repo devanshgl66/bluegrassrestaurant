@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function Footer(props) {
     return(
-    <div className="footer">
+    <footer className="footer">
         <div className="container">
             <div className="row justify-content-center">             
                 <div className="col-4 offset-1 col-sm-2">
@@ -20,7 +20,7 @@ function Footer(props) {
                     <address>
                     Old Jhajjar Road,Charkhi Dadri
                       <br />
-		              <i className="fa fa-phone fa-lg"></i>: +852 1234 5678<br />
+		              <i className="fa fa-phone fa-lg"></i>: +9416749221<br />
 		              <i className="fa fa-fax fa-lg"></i>: +852 8765 4321<br />
 		              <i className="fa fa-envelope fa-lg"></i>: <a href="mailto:restaurantbluegrass@hotmail.com">restaurantbluegrass@hotmail.com</a>
                     </address>
@@ -42,7 +42,7 @@ function Footer(props) {
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
     )
 }
 export default Footer;

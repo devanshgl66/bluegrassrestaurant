@@ -461,12 +461,12 @@ class Header extends Component {
     }
     render() {
         return(
-            <div>
+            <header>
                 <Navbar dark expand="md">
                     <div className="container">
                         <NavbarToggler onClick={this.toggleNav} />
                         <NavbarBrand className="mr-auto" href="/home">
-                        <img src='assets/images/logo.jpeg' height="30" width="41" alt='Restaurant Blue Grass' /></NavbarBrand>
+                        <img src='assets/images/logo.jpeg' style={{borderRadius:'60%'}} height="30" width="30" alt='Restaurant Blue Grass' /></NavbarBrand>
                         <Collapse isOpen={this.state.isNavOpen} navbar>
                             <Nav navbar>
                             <NavItem>
@@ -483,6 +483,9 @@ class Header extends Component {
                             </NavItem>
                             <NavItem>
                                 <NavLink className="nav-link" to="/favorites"><span className="fa fa-heart fa-lg"></span> My Favorites</NavLink>
+                            </NavItem>
+                            <NavItem>
+                                <NavLink className="nav-link" to="/booking"><span className="fa fa-cutlery fa-lg"></span> Book a table</NavLink>
                             </NavItem>
                             </Nav>
                             <Nav className='ml-auto' navbar>
@@ -508,7 +511,7 @@ class Header extends Component {
                     </div>
                 </Jumbotron>
                 
-            </div>
+            </header>
         );
     }
 }

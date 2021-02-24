@@ -13,6 +13,7 @@ import { addComments, fetchDishes, fetchComments, fetchPromos, postComment,fetch
 import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 import {LoadingModal} from './LoadingModal'
+import BookingMainPage from './TableBooking/BookingMainPage';
 const mapDispatchToProps=(dispatch)=>({
   addComment: (dishId, rating, author, comment) => dispatch(addComments(dishId, rating, author, comment)),
   fetchDishes: () => { dispatch(fetchDishes())},
@@ -129,20 +130,24 @@ class Main extends Component {
           resendOTP={this.props.resendOTP}
           verifyUser={this.props.verifyUser}
           />
-        <TransitionGroup>
-          <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
-            <Switch location={this.props.location}>
-                  <Route path='/home' component={HomePage} />
-                  <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} loginState={this.props.loginState} addDish={this.props.addNewDish} deleteDish={this.props.deleteDish} editDish={this.props.editDish}/>} />
-                  <Route path='/menu/:dishId' component={DishWithId}/>
-                  <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} admin={this.props.loginState.admin} postfeedback={this.props.postfeedback} fetchfeedback={this.props.fetchfeedback}/>}/>
-                  <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
-                  <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
-                  {/* <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} /> */}
-                  <Redirect to="/home"/>
-              </Switch>
-            </CSSTransition>
-          </TransitionGroup>
+          <main>
+            <TransitionGroup>
+              <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
+                <Switch location={this.props.location}>s
+                    <Route path='/home' component={HomePage} />
+                    <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} loginState={this.props.loginState} addDish={this.props.addNewDish} deleteDish={this.props.deleteDish} editDish={this.props.editDish}/>} />
+                    <Route path='/menu/:dishId' component={DishWithId}/>
+                    <Route exact path='/contactus' component={()=><Contact resetFeedbackForm={this.props.resetFeedbackForm} admin={this.props.loginState.admin} postfeedback={this.props.postfeedback} fetchfeedback={this.props.fetchfeedback}/>}/>
+                    <Route exact path='/aboutus' component={()=><About leaders={this.props.leaders}/>}/>
+                    <PrivateRoute exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} />
+                    {/* <Route exact path="/favorites" component={() => <Favorites favorites={this.props.favorites} deleteFavorite={this.props.deleteFavorite} />} /> */}
+                    <Route exact path='/booking' component={()=><BookingMainPage/>}/>
+                    <Redirect to="/home"/>
+                  
+                </Switch>
+              </CSSTransition>
+            </TransitionGroup>
+          </main>
         <Footer/>
       </div>
     );
