@@ -14,6 +14,7 @@ import {actions} from 'react-redux-form'
 import{TransitionGroup,CSSTransition} from 'react-transition-group'
 import {LoadingModal} from './LoadingModal'
 import BookingMainPage from './TableBooking/BookingMainPage';
+import { Alert } from 'react-bootstrap';
 const mapDispatchToProps=(dispatch)=>({
   addComment: (dishId, rating, author, comment) => dispatch(addComments(dishId, rating, author, comment)),
   fetchDishes: () => { dispatch(fetchDishes())},
@@ -52,6 +53,7 @@ const mapStateToProps=(state)=>{
   }
 }
 class Main extends Component {
+  state={loginRequired:false}
   //will called every time after this component is re rendered
   componentDidMount(){
     this.props.fetchDishes();
@@ -67,7 +69,7 @@ class Main extends Component {
   render() {
     // console.log(this.props.availableUName('admin'))
     // console.log(this.props.login)
-    const HomePage=()=>{
+    const HomePage=(props)=>{
       return(
         <Home
         dish={this.props.dishes.dishes.filter((dish) => dish.featured)[0]}
@@ -107,13 +109,17 @@ class Main extends Component {
     const PrivateRoute = ({ component: Component, ...rest }) => {
       // if(!this.props.loginState.login)
       //   alert('Login first')
+      if(this.props.loginState.login && this.state.loginRequired===true)
+        this.setState({loginRequired:false})
+      else if(!this.props.loginState.login && this.state.loginRequired===false)
+      this.setState({loginRequired:true})
       return(
         <Route {...rest} render={(props) => (
         this.props.loginState.login
           ? <Component {...props} />
           : <Redirect to={{
               pathname: '/home',
-              state: { from: props.location }
+              state: { from: props.location,loginError:true }
             }} />
       )} />
       )
@@ -122,6 +128,10 @@ class Main extends Component {
     // console.log(this.props.favorites)
     return (
       <div>
+        {this.state.loginRequired?
+        <Alert variant='warning'>
+    Login first
+  </Alert>:<></>}
         <Header login={this.props.login} loginState={this.props.loginState} 
           logout={this.props.logout} register={this.props.register} 
           availableUName={this.props.availableUName}
@@ -133,7 +143,7 @@ class Main extends Component {
           <main>
             <TransitionGroup>
               <CSSTransition key={this.props.location.key} classNames='page' timeout={300}>
-                <Switch location={this.props.location}>s
+                <Switch location={this.props.location}>
                     <Route path='/home' component={HomePage} />
                     <Route exact path='/menu' component={() => <Menu dishes={this.props.dishes} loginState={this.props.loginState} addDish={this.props.addNewDish} deleteDish={this.props.deleteDish} editDish={this.props.editDish}/>} />
                     <Route path='/menu/:dishId' component={DishWithId}/>

@@ -23,6 +23,7 @@ import { NavLink } from "react-router-dom";
 import { LocalForm, Control, Errors } from "react-redux-form";
 import { verifyUser } from "../redux/ActionCreater";
 import { Login } from "../redux/Login";
+import { Dropdown } from "react-bootstrap";
 // import Background from '../shared/images'
 const length = (len) => (val) => !val || val.length > len;
 
@@ -534,28 +535,43 @@ const LoginButton = (props) => {
     );
   } else {
     return (
-      <Fragment>
-        <NavItem>
-          <h4
-            className="text-success"
-            style={{
-              display: "inline",
-              paddingTop: "100px",
-              marginRight: "3px",
-            }}
-          >
-            {props.loginState.username}
-          </h4>
-        </NavItem>
-        <NavItem>
-          <Button
-            color="primary"
-            onClick={() => props.handleLogout(props.logout)}
-          >
-            <span className="fa fa-sign-out fa-lg"></span>Logout
-          </Button>
-        </NavItem>
-      </Fragment>
+        (
+            <Fragment>
+              <NavItem>
+                <Dropdown>
+                  <Dropdown.Toggle id="dropdown-basic">
+                  <i className="fa fa-user" aria-hidden="true"/>
+                    &nbsp;{props.loginState.username}
+                  </Dropdown.Toggle>
+        
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => props.handleLogout(props.logout)}>Logout</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </NavItem>
+        
+              {/* <NavItem>
+                <h4
+                  className="text-success"
+                  style={{
+                    display: "inline",
+                    paddingTop: "100px",
+                    marginRight: "3px",
+                  }}
+                >
+                  {props.loginState.username}
+                </h4>
+              </NavItem>
+              <NavItem>
+                <Button
+                  color="primary"
+                  onClick={() => props.handleLogout(props.logout)}
+                >
+                  <span className="fa fa-sign-out fa-lg"></span>Logout
+                </Button>
+              </NavItem> */}
+              </Fragment>
+          )
     );
   }
 };
@@ -609,7 +625,7 @@ class Header extends Component {
           className="d-block w-100"
           src={`./assets/images/${src}`}
           alt="First slide"
-          height='500vh'
+          height="500vh"
         />
         <Carousel.Caption>
           <h1>Restaurant Blue Grass</h1>
